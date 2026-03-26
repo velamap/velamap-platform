@@ -88,7 +88,7 @@ function App() {
       {/* SIDEBAR */}
       <div className="sidebar">
         <div className="sidebar-logo">
-          <div className="logo-mark">起飞AI</div>
+          <div className="logo-mark">帆布AI</div>
           <div className="logo-sub">AI Transformation OS</div>
         </div>
         <div className="nav">
@@ -451,7 +451,7 @@ function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-logo">
-          <div className="logo-mark" style={{ fontSize: '22px', marginBottom: '4px' }}>起飞AI</div>
+          <div className="logo-mark" style={{ fontSize: '22px', marginBottom: '4px' }}>帆布AI</div>
           <div className="logo-sub" style={{ color: 'var(--muted)', letterSpacing: '.1em' }}>AI TRANSFORMATION OS</div>
         </div>
         <h2 className="login-title">欢迎回来</h2>

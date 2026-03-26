@@ -436,7 +436,7 @@ function LoginContent() {
   }
   return (
     <div className="wc-login">
-      <div className="wc-login-logo">起飞AI</div>
+      <div className="wc-login-logo">帆布AI</div>
       <div className="wc-login-title">{t('开始你的 AI 转型之旅', 'Start Your AI Transformation')}</div>
       <div className="wc-login-sub">{t('每日 5 分钟 · 小组打卡 · 成长档案', 'Daily 5min · Group check-in · Growth profile')}</div>
       <button className="wc-google-btn" onClick={handleLogin}>
@@ -576,7 +576,7 @@ export default function Desktop({ user }: { user?: SupabaseUser | null }) {
       {/* Nav */}
       <nav className="desktop-nav">
         <div className={`desktop-logo ${lang === 'en' ? 'en' : ''}`}>
-          {lang === 'zh' ? '起飞AI' : 'Soar AI'}
+          {lang === 'zh' ? '帆布AI' : 'Vela AI'}
         </div>
         <div className="nav-right-controls">
           {!user && (
