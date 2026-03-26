@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import type { User } from '@supabase/supabase-js'
-import { Telescope, LayoutGrid, Bot, Cpu, Server, LogOut, Sun, Moon, Monitor, Globe, Languages, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { Telescope, LayoutGrid, Bot, Cpu, Server, LogOut, LogIn, Sun, Moon, Monitor, Globe, Languages, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
 import { useApp } from '@/lib/appContext'
@@ -17,7 +17,7 @@ const NAV_ITEMS = [
 
 type PageId = typeof NAV_ITEMS[number]['id']
 
-export default function AppShell({ user }: { user: User }) {
+export default function AppShell({ user }: { user: User | null }) {
   const { theme, setTheme, setMode, t, lang, setLang } = useApp()
   const [activePage, setActivePage] = useState<PageId>('frontier')
   const [collapsed, setCollapsed] = useState(false)
@@ -30,8 +30,8 @@ export default function AppShell({ user }: { user: User }) {
     window.location.reload()
   }
 
-  const avatarUrl = user.user_metadata?.avatar_url as string | undefined
-  const displayName = (user.user_metadata?.name as string) || user.email || '?'
+  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined
+  const displayName = (user?.user_metadata?.name as string) || user?.email || '?'
 
   // close user menu on outside click — handled via onBlur/outside click on avatar button
 
@@ -71,43 +71,46 @@ export default function AppShell({ user }: { user: User }) {
           })}
         </nav>
         <div className="sidebar-user">
-          {/* avatar — click to show sign-out */}
-          <div ref={avatarRef} style={{ position: 'relative' }}>
-            <div
-              onClick={() => setShowUserMenu(v => !v)}
-              style={{ cursor: 'pointer' }}
-              title={displayName}
-            >
-              {avatarUrl
-                ? <Image src={avatarUrl} alt="avatar" width={30} height={30} className="avatar" />
-                : <div className="avatar">{displayName[0].toUpperCase()}</div>
-              }
-            </div>
-            {showUserMenu && (
-              <div style={{ position: 'absolute', bottom: 40, left: -8, width: 160, background: 'var(--card)', border: '1px solid var(--border2)', borderRadius: 10, padding: '6px 0', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', zIndex: 999 }}>
-                <div style={{ padding: '8px 14px', fontSize: 12, color: 'var(--muted)', borderBottom: '1px solid var(--border)', marginBottom: 4 }}>{displayName}</div>
-                {/* mode switch */}
-                <div style={{ padding: '6px 14px 2px', fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('视图模式', 'View Mode')}</div>
-                <div style={{ display: 'flex', gap: 6, padding: '4px 14px 8px', borderBottom: '1px solid var(--border)' }}>
-                  <button onClick={() => setMode('os')} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '6px 0', borderRadius: 6, border: '1px solid var(--border2)', background: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--muted)', fontFamily: 'inherit' }}>
-                    <Monitor size={13} /> OS
-                  </button>
-                  <button style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '6px 0', borderRadius: 6, border: '1px solid var(--teal)', background: 'var(--teal-light)', cursor: 'default', fontSize: 12, fontWeight: 600, color: 'var(--teal)', fontFamily: 'inherit' }}>
-                    <Globe size={13} /> Web
+          {user ? (
+            /* avatar — click to show menu */
+            <div ref={avatarRef} style={{ position: 'relative' }}>
+              <div onClick={() => setShowUserMenu(v => !v)} style={{ cursor: 'pointer' }} title={displayName}>
+                {avatarUrl
+                  ? <Image src={avatarUrl} alt="avatar" width={30} height={30} className="avatar" />
+                  : <div className="avatar">{displayName[0].toUpperCase()}</div>
+                }
+              </div>
+              {showUserMenu && (
+                <div style={{ position: 'absolute', bottom: 40, left: -8, width: 160, background: 'var(--card)', border: '1px solid var(--border2)', borderRadius: 10, padding: '6px 0', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', zIndex: 999 }}>
+                  <div style={{ padding: '8px 14px', fontSize: 12, color: 'var(--muted)', borderBottom: '1px solid var(--border)', marginBottom: 4 }}>{displayName}</div>
+                  <div style={{ padding: '6px 14px 2px', fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('视图模式', 'View Mode')}</div>
+                  <div style={{ display: 'flex', gap: 6, padding: '4px 14px 8px', borderBottom: '1px solid var(--border)' }}>
+                    <button onClick={() => setMode('os')} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '6px 0', borderRadius: 6, border: '1px solid var(--border2)', background: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--muted)', fontFamily: 'inherit' }}>
+                      <Monitor size={13} /> OS
+                    </button>
+                    <button style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '6px 0', borderRadius: 6, border: '1px solid var(--teal)', background: 'var(--teal-light)', cursor: 'default', fontSize: 12, fontWeight: 600, color: 'var(--teal)', fontFamily: 'inherit' }}>
+                      <Globe size={13} /> Web
+                    </button>
+                  </div>
+                  <button onClick={handleSignOut} style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', fontFamily: 'inherit' }}>
+                    <LogOut size={13} /> {t('退出登录', 'Sign out')}
                   </button>
                 </div>
-                <button
-                  onClick={handleSignOut}
-                  style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--ink)', fontFamily: 'inherit' }}
-                >
-                  <LogOut size={13} /> {t('退出登录', 'Sign out')}
-                </button>
-              </div>
-            )}
-          </div>
-          <div className="user-info" style={{ flex: 1, minWidth: 0 }}>
-            <div className="name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
-          </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={async () => { const { createClient } = await import('@/lib/supabase/client'); await createClient().auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${location.origin}/auth/callback` } }) }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 4px', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--muted)', fontFamily: 'inherit' }}
+            >
+              <LogIn size={14} /> {t('登录', 'Sign in')}
+            </button>
+          )}
+          {user && !collapsed && (
+            <div className="user-info" style={{ flex: 1, minWidth: 0 }}>
+              <div className="name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
+            </div>
+          )}
         </div>
       </div>
 

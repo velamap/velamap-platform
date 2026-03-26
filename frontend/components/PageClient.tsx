@@ -8,7 +8,7 @@ import AppShell from './AppShell'
 function Inner({ user }: { user: User | null }) {
   const { mode } = useApp()
 
-  if (mode === 'web' && user) return <AppShell user={user} />
+  if (mode === 'web') return <AppShell user={user} />
   return <Desktop user={user} />
 }
 
