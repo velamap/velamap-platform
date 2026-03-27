@@ -6,12 +6,13 @@ import {
   Telescope, LayoutGrid, Bot, Cpu, Server, LogOut, LogIn, Sun, Moon,
   Monitor, Globe, Languages, SidebarClose, SidebarOpen, Search,
   ChevronRight, Home, Menu, X, BookOpen, Code, Wrench, BarChart,
-  History, AlertTriangle, Bookmark
+  History, AlertTriangle, Bookmark, Database
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
 import { useApp } from '@/lib/appContext'
 import type { LensId } from '@/lib/appContext'
+import RagConceptual from './RagConceptual'
 
 // ------------------------------
 // 1 级导航
@@ -48,6 +49,7 @@ const TOPICS = {
   'execution': [
     { id: 'orchestration', zh: '工作流编排', en: 'Orchestration', icon: LayoutGrid, descZh: 'DAG/状态机执行',   descEn: 'DAG / state machine execution' },
     { id: 'observability', zh: '可观测性',   en: 'Observability', icon: BarChart,   descZh: '监控/追踪/日志',   descEn: 'Monitoring / tracing / logging' },
+    { id: 'rag',           zh: '检索增强生成', en: 'RAG',         icon: Database,   descZh: '检索外部知识增强生成', descEn: 'Retrieve external knowledge to enhance generation' },
   ],
   'frontier': [
     { id: 'world-model', zh: '世界模型',  en: 'World Model',      icon: Globe, descZh: '物理与时空建模',     descEn: 'Physical & spatiotemporal modeling' },
@@ -327,6 +329,17 @@ const TOPIC_CONTENT: Record<string, Record<LensId, { title: string; content: str
       content: ['数据爆炸', '性能损耗', '排查成本高', '隐私合规风险']
     }
   },
+  rag: {
+    conceptual: {
+      title: 'RAG 概念',
+      content: []
+    },
+    mechanical: { title: 'RAG 机制', content: ['内容正在建设中'] },
+    practical: { title: 'RAG 实践', content: ['内容正在建设中'] },
+    comparative: { title: 'RAG 对比', content: ['内容正在建设中'] },
+    evolutionary: { title: 'RAG 演进', content: ['内容正在建设中'] },
+    critical: { title: 'RAG 局限', content: ['内容正在建设中'] }
+  },
   'world-model': {
     conceptual: {
       title: '世界模型概念',
@@ -561,7 +574,9 @@ export default function AppShell({ user }: { user: User | null }) {
 
             {/* 中间正文 */}
             <div className="doc-main">
-              {TOPIC_CONTENT[selectedTopic!]?.[activeLens] ? (
+              {selectedTopic === 'rag' && activeLens === 'conceptual' ? (
+                <RagConceptual />
+              ) : TOPIC_CONTENT[selectedTopic!]?.[activeLens] ? (
                 <>
                   <h1>{TOPIC_CONTENT[selectedTopic!][activeLens].title}</h1>
                   {TOPIC_CONTENT[selectedTopic!][activeLens].content.map((line, i) => (
