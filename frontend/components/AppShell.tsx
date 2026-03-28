@@ -2,11 +2,11 @@
 
 import SharedDocView from './SharedDocView'
 import LangDropdown from './LangDropdown'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import type { User } from '@supabase/supabase-js'
 import {
   Telescope, LayoutGrid, Bot, Cpu, Server, LogOut, LogIn, Sun, Moon,
-  Monitor, Globe, Languages, SidebarClose, SidebarOpen, Search,
+  Monitor, Globe, Languages, PanelLeftClose, PanelLeft, Search,
   ChevronRight, Home, Menu, X, BookOpen, Code, Wrench, BarChart,
   History, AlertTriangle, Bookmark, Database
 } from 'lucide-react'
@@ -16,6 +16,7 @@ import { useApp } from '@/lib/appContext'
 import type { LensId } from '@/lib/appContext'
 import RagConceptual from './RagConceptual'
 import { MDXRemote } from 'next-mdx-remote'
+import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts'
 
 // ------------------------------
 // 1 级导航
@@ -93,6 +94,39 @@ export default function AppShell({ user }: { user: User | null }) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [search, setSearch] = useState('')
+  const [searchTargetTopic, setSearchTargetTopic] = useState<string | null>(null)
+  const [searchFocused, setSearchFocused] = useState(false)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  // ── Keyboard shortcuts ──────────────────────────────────────────────────
+  useKeyboardShortcuts([
+    {
+      key: 'k', meta: true,
+      description: 'Open search',
+      action: () => {
+        searchInputRef.current?.focus()
+        searchInputRef.current?.select()
+      }
+    },
+    // Add more shortcuts here, e.g.:
+    // { key: 'Escape', description: 'Clear search', action: () => setSearch('') },
+  ])
+
+  const searchResults = useMemo(() => {
+    if (!search.trim()) return []
+    const q = search.toLowerCase()
+    const results: any[] = []
+    NAV_ITEMS.forEach(nav => {
+      const topics = TOPICS[nav.id] || []
+      topics.forEach(t => {
+        if (t.zh.toLowerCase().includes(q) || t.en.toLowerCase().includes(q) || t.descZh.toLowerCase().includes(q) || t.descEn.toLowerCase().includes(q)) {
+          results.push({ pageId: nav.id, pageZh: nav.zhLabel, pageEn: nav.enLabel, topic: t })
+        }
+      })
+    })
+    return results.slice(0, 6)
+  }, [search])
+
   const [dynamicToc, setDynamicToc] = useState<{id: string, text: string}[]>([])
   const [mdxSource, setMdxSource] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -149,40 +183,32 @@ export default function AppShell({ user }: { user: User | null }) {
 
   return (
     <div className="app-container">
-      {/* 移动端顶部栏 */}
-      <div className="mobile-header">
-        <button onClick={() => setMobileSidebarOpen(true)}><Menu size={20} /></button>
-        <div className="logo">Vela AI</div>
-        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-        </button>
-      </div>
 
-      {/* 侧边栏 */}
+      {/* ── LEFT SIDEBAR (full height, Gemini style) ── */}
       <div className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-overlay" onClick={() => setMobileSidebarOpen(false)} />
         <div className="sidebar-inner">
-          <div className="sidebar-header">
-            {!collapsed && <div className="logo-text">{lang === 'zh' ? '帆图' : 'Vela AI'}</div>}
-            <button className="close-mobile" onClick={() => setMobileSidebarOpen(false)}><X size={18} /></button>
-            <button className="toggle-desktop" onClick={() => setCollapsed(!collapsed)}>
-              {collapsed ? <SidebarOpen size={18} /> : <SidebarClose size={18} />}
+
+          {/* Hamburger + Logo row — aligns with top-bar height */}
+          <div className="sidebar-toggle-row">
+            <button
+              className="nav-icon-btn sidebar-toggle-btn"
+              onClick={() => setCollapsed(!collapsed)}
+              title={collapsed ? (lang === 'zh' ? '展开' : 'Expand') : (lang === 'zh' ? '收起' : 'Collapse')}
+            >
+              <Menu size={20} />
             </button>
           </div>
 
-          <div className="search-box">
-            <Search size={14} />
-            <input placeholder={lang === 'zh' ? '搜索' : 'Search'} value={search} onChange={e => setSearch(e.target.value)} />
-          </div>
+          {/* Nav links */}
 
-          <div className="nav-section">{!collapsed && (lang === 'zh' ? '知识体系' : 'Knowledge')}</div>
           {NAV_ITEMS.map(item => {
             const Icon = item.icon
             return (
               <button
                 key={item.id}
                 className={`nav-item ${activePage === item.id ? 'active' : ''}`}
-                onClick={() => { setActivePage(item.id); setSelectedTopic(null); setMobileSidebarOpen(false) }}
+                onClick={() => { setActivePage(item.id); setSearchTargetTopic(null); setMobileSidebarOpen(false) }}
               >
                 <Icon size={16} style={{ flexShrink: 0 }} />
                 {!collapsed && <span>{lang === 'zh' ? item.zhLabel : item.enLabel}</span>}
@@ -190,6 +216,7 @@ export default function AppShell({ user }: { user: User | null }) {
             )
           })}
 
+          {/* User footer */}
           <div className="sidebar-footer" ref={userRef}>
             {user ? (
               <div className="user-row" onClick={() => setShowUserMenu(!showUserMenu)}>
@@ -215,44 +242,90 @@ export default function AppShell({ user }: { user: User | null }) {
         </div>
       </div>
 
-      {/* 主内容 */}
+      {/* ── MAIN CONTENT (right of sidebar) ── */}
       <div className="main-content">
-        {/* 顶部控制栏 */}
+
+        {/* Top bar — scoped to main area, not spanning sidebar */}
         <div className="top-bar">
-          {/* 主题切换 */}
-          <button className="nav-icon-btn" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} title={lang === 'zh' ? '切换主题' : 'Toggle theme'}>
-            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-          </button>
-          {/* 语言切换 */}
-          <LangDropdown />
+          <div className="top-bar-left">
+            <div className={`logo-text${lang === 'en' ? ' en' : ''}`} style={{ whiteSpace: 'nowrap' }}>
+              {lang === 'zh' ? '帆图' : 'Vela AI'}
+            </div>
+          </div>
+
+          <div className="top-search-container">
+            <div className="top-search-box">
+              <Search size={14} className="search-icon" />
+              <input
+                ref={searchInputRef}
+                placeholder={lang === 'zh' ? '搜索知识卡片 (⌘K)' : 'Search cards (⌘K)'}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
+              />
+            </div>
+            {searchFocused && search.trim() && (
+              <div className="search-dropdown">
+                <div className="search-dropdown-header">{lang === 'zh' ? '搜索结果' : 'Search Results'}</div>
+                {searchResults.length > 0 ? searchResults.map(res => (
+                  <div key={res.topic.id} className="search-result-item" onClick={() => {
+                    setActivePage(res.pageId)
+                    setSearchTargetTopic(res.topic.id)
+                    setSearch('')
+                  }}>
+                    <div className="sr-icon"><res.topic.icon size={16} /></div>
+                    <div className="sr-text">
+                      <div className="sr-title">{lang === 'zh' ? res.topic.zh : res.topic.en}</div>
+                      <div className="sr-path">{lang === 'zh' ? res.pageZh : res.pageEn}</div>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="search-empty">{lang === 'zh' ? '没有找到相关内容' : 'No results found'}</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="top-bar-right">
+            <button className="nav-icon-btn" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} title={lang === 'zh' ? '切换主题' : 'Toggle theme'}>
+              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+            <LangDropdown />
+          </div>
         </div>
 
-        <SharedDocView pageId={activePage} />
+        <SharedDocView key={`${activePage}-${searchTargetTopic || 'none'}`} pageId={activePage} initialTopic={searchTargetTopic} />
       </div>
 
-      {/* 全局样式 */}
+      {/* ── GLOBAL STYLES ── */}
       <style jsx global>{`
         * { box-sizing: border-box; margin:0; padding:0; font-family: 'DM Sans', system-ui, sans-serif; }
-        .app-container { display: flex; height: 100vh; background: var(--surface); color: var(--ink); }
-        .mobile-header { display: none; align-items: center; justify-content: space-between; padding:12px 16px; background: var(--card); border-bottom:1px solid var(--border); }
-        .sidebar { position: relative; width:240px; background: var(--card); border-right:1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; transition: width 0.2s; }
+        .app-container { display: flex; flex-direction: row; height: 100vh; background: var(--surface); color: var(--ink); overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width:240px; background: var(--card); border-right:1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.2s; overflow: hidden; }
         .sidebar.collapsed { width:60px; }
         .sidebar-overlay { display: none; position: fixed; inset:0; background: rgba(0,0,0,0.4); z-index:9; }
-        .sidebar-inner { position: relative; z-index:10; height: 100%; display: flex; flex-direction: column; }
-        .sidebar-header { height:48px; padding:0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom:1px solid var(--border); }
-        .logo-text { font-family: 'Noto Serif SC', serif; font-weight:700; font-size:16px; color: var(--ink); }
-        .close-mobile { display: none; }
-        .search-box { display: flex; align-items: center; gap:8px; padding:8px 12px; margin:8px; background: var(--surface); border-radius:8px; }
-        .search-box input { border:none; background:none; outline:none; color: var(--ink); font-size:14px; width:100%; }
+        .sidebar-inner { height: 100%; display: flex; flex-direction: column; }
+        .sidebar-toggle-row { display: flex; align-items: center; height: 60px; padding: 0 14px; flex-shrink: 0; }
+        .sidebar-toggle-btn { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--ink2); }
+        .logo-text { font-family: 'Noto Serif SC', serif; font-weight:700; font-size:16px; color: var(--ink); white-space: nowrap; }
+        .logo-text.en { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight:800; font-size:18px; }
         .nav-section { padding:8px 16px; font-size:11px; color: var(--muted); text-transform: uppercase; letter-spacing:0.5px; }
-        .nav-item { display: flex; align-items: center; gap:10px; height:40px; padding:0 16px; border-radius:8px; cursor:pointer; background:none; border:none; color: var(--muted); font-size:14px; line-height:1; text-align:left; margin:2px 8px; width: calc(100% - 16px); white-space: nowrap; overflow: hidden; }
+        .nav-item { display: flex; align-items: center; gap:10px; height:40px; padding:0 16px; border-radius:8px; cursor:pointer; background:none; border:none; color: var(--muted); font-size:14px; line-height:1; text-align:left; margin:2px 8px; width: calc(100% - 16px); white-space: nowrap; overflow: hidden; transition: background 0.15s, color 0.15s; }
+        .sidebar.collapsed .nav-item { justify-content: center; padding: 0; width: 36px; margin: 2px 12px; }
+        .sidebar.collapsed .sidebar-toggle-row { padding: 0 12px; justify-content: center; }
+        .sidebar.collapsed .sidebar-toggle-btn { margin: 0; }
         .nav-item:hover { background: var(--surface); color: var(--ink); }
         .nav-item.active { background: var(--teal-light); color: var(--teal); font-weight:600; }
-        .sidebar-footer { margin-top: auto; padding:12px; border-top:1px solid var(--border); position: relative; }
+        .close-mobile { display: none; }
+        .sidebar-footer { margin-top: auto; padding:12px; position: relative; }
         .user-row { display: flex; align-items: center; gap:10px; cursor:pointer; padding: 4px; border-radius: 8px; }
         .user-row:hover { background: var(--surface); }
         .avatar { width:28px; height:28px; border-radius:8px; background: var(--surface); display: grid; place-items: center; font-weight:600; color: var(--ink); }
-        .user-menu { position: absolute; bottom:60px; left:8px; width:168px; background: var(--card); border:1px solid var(--border2); border-radius:10px; padding:6px 0; box-shadow:0 4px 20px rgba(0,0,0,0.12); z-index: 99; }
+        .name { font-size:13px; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-menu { position: fixed; bottom:70px; left:8px; width:200px; background: var(--card); border:1px solid var(--border2); border-radius:10px; padding:6px 0; box-shadow:0 4px 20px rgba(0,0,0,0.12); z-index: 9999; }
         .user-menu-label { padding:6px 14px 2px; font-size:11px; color: var(--muted); text-transform: uppercase; letter-spacing:0.08em; }
         .user-menu-modes { display: flex; gap:6px; padding:4px 14px 8px; border-bottom:1px solid var(--border); }
         .user-menu-mode-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:5px; padding:6px 0; border-radius:6px; border:1px solid var(--border2); background:none; cursor:pointer; font-size:12px; font-weight:600; color: var(--muted); font-family:inherit; }
@@ -260,26 +333,44 @@ export default function AppShell({ user }: { user: User | null }) {
         .user-menu button { display: flex; align-items: center; gap:8px; width:100%; padding:8px 14px; background:none; border:none; color: var(--ink); cursor:pointer; font-size:13px; font-family:inherit; }
         .user-menu button:hover { background: var(--surface); }
         .signin { display: flex; align-items: center; gap:8px; width:100%; padding:8px; background:none; border:none; color: var(--muted); cursor:pointer; font-size:14px; font-family:inherit; }
-        .main-content { flex:1; overflow-y: auto; padding:0; display: flex; flex-direction: column; }
-        .top-bar { display: flex; align-items: center; justify-content: flex-end; gap:8px; padding:0 24px; height:48px; background: var(--card); border-bottom:1px solid var(--border); flex-shrink:0; }
+
+        /* Main content */
+        .main-content { flex:1; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+        .top-bar { height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 8px; min-width: 80px; }
+        .top-bar-right { justify-content: flex-end; }
+        .top-search-container { position: relative; flex: 1; max-width: 480px; display: flex; justify-content: center; }
+        .top-search-box { display: flex; align-items: center; gap: 8px; padding: 0 16px; height: 36px; width: 100%; max-width: 400px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; transition: border-color 0.2s, box-shadow 0.2s; }
+        .top-search-box:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-light); }
+        .top-search-box .search-icon { color: var(--muted); flex-shrink: 0; }
+        .top-search-box input { border: none; background: transparent; outline: none; color: var(--ink); font-size: 14px; width: 100%; }
         .nav-icon-btn { width:32px; height:32px; border-radius:8px; border:none; background:transparent; color: var(--muted); display:flex; align-items:center; justify-content:center; cursor:pointer; transition: all .15s; }
         .nav-icon-btn:hover { background: var(--surface); color: var(--ink); }
-        .lang-btn { width:44px; gap:3px; }
-                        .breadcrumbs .active { color: var(--teal); font-weight:600; }
-                                                                                                                                                                        @media (max-width: 768px) {
-          .mobile-header { display: flex; }
-          .sidebar { position: fixed; left:0; top:0; bottom:0; transform: translateX(-100%); transition: transform 0.2s; z-index:99; }
+        .search-dropdown { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); padding: 8px; z-index: 1000; }
+        .search-dropdown-header { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px 4px; }
+        .search-result-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+        .search-result-item:hover { background: var(--surface); }
+        .sr-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--teal-light); color: var(--teal); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .sr-text { flex: 1; overflow: hidden; }
+        .sr-title { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+        .sr-path { font-size: 11px; color: var(--muted); }
+        .search-empty { padding: 24px; text-align: center; font-size: 13px; color: var(--muted); font-style: italic; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+          .sidebar { position: fixed; left:0; top:0; bottom:0; transform: translateX(-100%); transition: transform 0.2s; z-index:99; width:240px !important; }
           .sidebar.mobile-open { transform: translateX(0); }
           .sidebar-overlay { display: block; }
           .close-mobile { display: flex; }
-          .toggle-desktop { display: none; }
-                  }
-        [data-theme="dark"] .app-container { background: var(--surface); color: var(--ink); }
+        }
+
+        /* Dark theme */
         [data-theme="dark"] .sidebar { background: var(--card); border-right-color: var(--border); }
-        [data-theme="dark"] .sidebar-header { border-bottom-color: var(--border); }
-        [data-theme="dark"] .top-bar { background: var(--card); border-bottom-color: var(--border); }
-        [data-theme="dark"]         [data-theme="dark"] .user-menu { background: var(--card); border-color: var(--border2); }
+        [data-theme="dark"] .top-bar { background: var(--surface); border-bottom-color: var(--border); }
+        [data-theme="dark"] .top-search-box { background: var(--card); border-color: var(--border); }
+        [data-theme="dark"] .user-menu { background: var(--card); border-color: var(--border2); }
         [data-theme="dark"] .nav-item.active { background: rgba(4,138,129,0.2); }
+        [data-theme="dark"] .logo-text { color: var(--ink); }
       `}</style>
     </div>
   )

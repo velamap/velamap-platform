@@ -7,12 +7,18 @@ import { MDXRemote } from 'next-mdx-remote'
 import RagConceptual from './RagConceptual'
 import { TOPICS, NAV_ITEMS, type PageId, LENS_ICONS, LENS_ZH } from './AppShell'
 
-export default function SharedDocView({ pageId, inOS = false }: { pageId: PageId, inOS?: boolean }) {
+export default function SharedDocView({ pageId, initialTopic = null, inOS = false }: { pageId: PageId, initialTopic?: string | null, inOS?: boolean }) {
   const { lang, activeLens, setActiveLens } = useApp()
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null)
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(initialTopic)
   const [dynamicToc, setDynamicToc] = useState<{id: string, text: string}[]>([])
   const [mdxSource, setMdxSource] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  // Sync when props change (especially useful when key changes or initialTopic changes)
+  useEffect(() => {
+    setSelectedTopic(initialTopic);
+  }, [pageId, initialTopic]);
+
 
   useEffect(() => {
     if (!selectedTopic || !activeLens) return;
