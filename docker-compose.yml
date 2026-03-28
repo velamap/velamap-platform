@@ -1,8 +1,7 @@
-version: "3.9"
-
 services:
   api:
-    image: ghcr.io/${GITHUB_REPOSITORY}/api:latest
+    build: ./backend/python
+    image: ${GITHUB_REPOSITORY:-velamap/platform}/api:latest
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -22,7 +21,12 @@ services:
   #     - "8202:8080"
 
   frontend:
-    image: ghcr.io/${GITHUB_REPOSITORY}/frontend:latest
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    image: ${GITHUB_REPOSITORY:-velamap/platform}/frontend:latest
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
