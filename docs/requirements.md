@@ -1,4 +1,4 @@
-# Requirements — Soar AI
+# Requirements — Vela AI
 
 > **版本历史**
 > | 版本 | 日期 | 变更摘要 |
@@ -11,9 +11,9 @@
 
 ## 1. Background
 
-Soar AI (起飞AI) is an **AI Knowledge OS** — a structured knowledge system for AI practitioners and professionals who want to understand and apply AI at depth.
+Vela AI is an **AI Knowledge OS** — a structured knowledge system for AI practitioners and professionals who want to understand and apply AI at depth.
 
-The core insight: AI knowledge is fragmented across papers, blogs, and tools. Soar AI organizes it into a layered architecture (Infrastructure → Execution → Agents → Applications) with a Frontier tag system for tracking maturity and relevance.
+The core insight: AI knowledge is fragmented across papers, blogs, and tools. Vela AI organizes it into a layered architecture (Infrastructure → Execution → Agents → Applications) with a Frontier tag system for tracking maturity and relevance.
 
 Target users: AI engineers, product managers, researchers, and knowledge workers building AI-powered systems.
 

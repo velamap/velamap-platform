@@ -1,4 +1,4 @@
-# Soar AI
+# Vela AI
 
 > AI Transformation OS — helping every professional master AI, one day at a time.
 
@@ -8,7 +8,7 @@
 
 ## What is this?
 
-Soar AI is a daily AI training system, not another tool list. It helps professionals systematically integrate AI into their real workflows through:
+Vela AI is a daily AI training system, not another tool list. It helps professionals systematically integrate AI into their real workflows through:
 
 - **Daily 5-min tasks** — role-specific, actionable, done in one sitting
 - **Group check-ins** — 5-person accountability groups with leaderboards
