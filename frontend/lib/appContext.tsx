@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useMemo, useEffect, useRef, Fragment, ReactNode } from 'react'
 
 type Lang = 'zh' | 'en'
 type Theme = 'light' | 'dark'
@@ -33,8 +33,8 @@ export function AppProvider({ children, defaultMode = 'web' }: { children: React
 
   useEffect(() => {
     const title = lang === 'zh'
-      ? '帆迹 · 探索AI世界'
-      : 'Vela AI – Explore AI World'
+      ? '帆迹 · AI系统化转型：从愿景到落地'
+      : 'Vela AI – Systematic AI Transformation: From Vision to Reality'
     document.title = title
   }, [lang])
 

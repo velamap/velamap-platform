@@ -2,7 +2,7 @@
 
 import SharedDocView from './SharedDocView'
 import LangDropdown from './LangDropdown'
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef, Fragment } from 'react'
 import type { User } from '@supabase/supabase-js'
 import {
   Telescope, LayoutGrid, Bot, Cpu, Server, LogOut, LogIn, Sun, Moon,
@@ -200,19 +200,27 @@ export default function AppShell({ user }: { user: User | null }) {
             </button>
           </div>
 
-          {/* Nav links */}
-
-          {NAV_ITEMS.map(item => {
+          {/* Nav links with category labels */}
+          {NAV_ITEMS.map((item, idx) => {
             const Icon = item.icon
+            let sectionLabel = null
+            if (idx === 0) sectionLabel = lang === 'zh' ? '愿景 Vision' : 'Vision'
+            if (idx === 1) sectionLabel = lang === 'zh' ? '落地 Reality' : 'Reality'
+            if (idx === 3) sectionLabel = lang === 'zh' ? '内核 Core' : 'Core'
+
             return (
-              <button
-                key={item.id}
-                className={`nav-item ${activePage === item.id ? 'active' : ''}`}
-                onClick={() => { setActivePage(item.id); setSearchTargetTopic(null); setMobileSidebarOpen(false) }}
-              >
-                <Icon size={16} style={{ flexShrink: 0 }} />
-                {!collapsed && <span>{lang === 'zh' ? item.zhLabel : item.enLabel}</span>}
-              </button>
+              <Fragment key={item.id}>
+                {sectionLabel && !collapsed && (
+                  <div className="nav-section">{sectionLabel}</div>
+                )}
+                <button
+                  className={`nav-item ${activePage === item.id ? 'active' : ''}`}
+                  onClick={() => { setActivePage(item.id); setSearchTargetTopic(null); setMobileSidebarOpen(false) }}
+                >
+                  <Icon size={16} style={{ flexShrink: 0 }} />
+                  {!collapsed && <span>{lang === 'zh' ? item.zhLabel : item.enLabel}</span>}
+                </button>
+              </Fragment>
             )
           })}
 
@@ -255,7 +263,7 @@ export default function AppShell({ user }: { user: User | null }) {
             <div className="brand-block">
               <span className="brand-name">{lang === 'zh' ? '帆迹' : 'Vela AI'}</span>
               <span className="brand-slogan">
-                {lang === 'zh' ? '探索AI世界' : 'Explore AI World'}
+                {lang === 'zh' ? 'AI系统化转型：从愿景到落地' : 'Systematic AI Transformation: From Vision to Reality'}
               </span>
             </div>
           </div>

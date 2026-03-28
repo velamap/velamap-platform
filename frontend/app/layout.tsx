@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '帆迹 · 探索AI世界',
+  title: '帆迹 · AI系统化转型：从愿景到落地',
   description: '',
 }
 
