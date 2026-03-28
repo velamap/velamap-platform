@@ -24,7 +24,7 @@ import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts'
 export const NAV_ITEMS = [
   { id: 'frontier', zhLabel: '前沿探索', enLabel: 'Frontier', icon: Telescope },
   { id: 'applications', zhLabel: '应用落地', enLabel: 'Applications', icon: LayoutGrid },
-  { id: 'execution', zhLabel: '执行层', enLabel: 'Execution', icon: Cpu },
+  { id: 'execution', zhLabel: '工程化', enLabel: 'Engineering', icon: Cpu },
   { id: 'agents', zhLabel: '智能体', enLabel: 'Agents', icon: Bot },
   { id: 'ai-infra', zhLabel: 'AI基础设施', enLabel: 'AI Infra', icon: Server },
 ] as const
