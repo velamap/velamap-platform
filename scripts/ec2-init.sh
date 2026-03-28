@@ -18,16 +18,16 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plu
 sudo usermod -aG docker $USER
 
 echo "=== 创建 .env 文件 ==="
-cat > ~/SkillMarket/.env << 'EOF'
-GITHUB_REPOSITORY=wuyongpeng/SkillMarket
+cat > ~/velamap-platform/.env << 'EOF'
+GITHUB_REPOSITORY=wuyongpeng/velamap-platform
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 DATABASE_URL=your-supabase-db-connection-string
-ALLOWED_ORIGIN=https://skillmarket.top
+ALLOWED_ORIGIN=https://velamap.com
 EOF
 
 echo ""
 echo "=== 完成 ==="
-echo "1. 编辑 ~/SkillMarket/.env 填入真实的环境变量"
+echo "1. 编辑 ~/velamap-platform/.env 填入真实的环境变量"
 echo "2. 重新登录使 docker 权限生效: exit && ssh ..."
-echo "3. 然后运行: cd ~/SkillMarket && docker compose up -d"
+echo "3. 然后运行: cd ~/velamap-platform && docker compose up -d"

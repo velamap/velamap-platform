@@ -2,7 +2,7 @@
 
 > AI Transformation OS — helping every professional master AI, one day at a time.
 
-**Live**: [skillmarket.top](https://skillmarket.top)
+**Live**: [velamap.com](https://velamap.com)
 
 ---
 
@@ -38,7 +38,7 @@ The UI is an OS-style desktop: double-click icons to open draggable windows, swi
 ## Project Structure
 
 ```
-SkillMarket/
+VELAMAP-PLATFORM/
 ├── frontend/                  # Next.js 14 App Router
 │   ├── app/
 │   │   ├── layout.tsx
