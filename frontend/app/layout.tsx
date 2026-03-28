@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '帆图 | AI Knowledge OS',
-  description: '帮助职场人系统化地将 AI 工具融入日常工作流',
+  title: '帆图 · 探索AI世界',
+  description: '',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -14,7 +14,7 @@ function Inner({ user }: { user: User | null }) {
 
 export default function PageClient({ user }: { user: User | null }) {
   return (
-    <AppProvider defaultMode="os">
+    <AppProvider defaultMode="web">
       <Inner user={user} />
     </AppProvider>
   )

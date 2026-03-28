@@ -21,7 +21,7 @@ interface AppCtx {
 
 const AppContext = createContext<AppCtx>({} as AppCtx)
 
-export function AppProvider({ children, defaultMode = 'os' }: { children: ReactNode; defaultMode?: Mode }) {
+export function AppProvider({ children, defaultMode = 'web' }: { children: ReactNode; defaultMode?: Mode }) {
   const [lang, setLang] = useState<Lang>('en')
   const [theme, setTheme] = useState<Theme>('light')
   const [mode, setMode] = useState<Mode>(defaultMode)
@@ -30,6 +30,13 @@ export function AppProvider({ children, defaultMode = 'os' }: { children: ReactN
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    const title = lang === 'zh' 
+      ? '帆图 · 探索AI世界' 
+      : 'Vela AI – Explore AI World'
+    document.title = title
+  }, [lang])
 
   const t = (zh: string, en: string) => lang === 'zh' ? zh : en
 

@@ -248,8 +248,11 @@ export default function AppShell({ user }: { user: User | null }) {
         {/* Top bar — scoped to main area, not spanning sidebar */}
         <div className="top-bar">
           <div className="top-bar-left">
-            <div className={`logo-text${lang === 'en' ? ' en' : ''}`} style={{ whiteSpace: 'nowrap' }}>
-              {lang === 'zh' ? '帆图' : 'Vela AI'}
+            <div className="brand-block">
+              <span className="brand-name">{lang === 'zh' ? '帆图' : 'Vela AI'}</span>
+              <span className="brand-slogan">
+                {lang === 'zh' ? '· 探索AI世界' : '– Explore AI World'}
+              </span>
             </div>
           </div>
 
@@ -312,6 +315,9 @@ export default function AppShell({ user }: { user: User | null }) {
         .sidebar-toggle-btn { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--ink2); }
         .logo-text { font-family: 'Noto Serif SC', serif; font-weight:700; font-size:16px; color: var(--ink); white-space: nowrap; }
         .logo-text.en { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight:800; font-size:18px; }
+        .brand-block { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+        .brand-name { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px; color: var(--ink); }
+        .brand-slogan { font-size: 13px; color: var(--muted); font-weight: 400; letter-spacing: 0.02em; }
         .nav-section { padding:8px 16px; font-size:11px; color: var(--muted); text-transform: uppercase; letter-spacing:0.5px; }
         .nav-item { display: flex; align-items: center; gap:10px; height:40px; padding:0 16px; border-radius:8px; cursor:pointer; background:none; border:none; color: var(--muted); font-size:14px; line-height:1; text-align:left; margin:2px 8px; width: calc(100% - 16px); white-space: nowrap; overflow: hidden; transition: background 0.15s, color 0.15s; }
         .sidebar.collapsed .nav-item { justify-content: center; padding: 0; width: 36px; margin: 2px 12px; }
