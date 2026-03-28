@@ -23,8 +23,8 @@ import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts'
 // ------------------------------
 export const NAV_ITEMS = [
   { id: 'frontier', zhLabel: '前沿探索', enLabel: 'Frontier', icon: Telescope },
-  { id: 'execution', zhLabel: '执行层', enLabel: 'Execution', icon: Cpu },
   { id: 'applications', zhLabel: '应用落地', enLabel: 'Applications', icon: LayoutGrid },
+  { id: 'execution', zhLabel: '执行层', enLabel: 'Execution', icon: Cpu },
   { id: 'agents', zhLabel: '智能体', enLabel: 'Agents', icon: Bot },
   { id: 'ai-infra', zhLabel: 'AI基础设施', enLabel: 'AI Infra', icon: Server },
 ] as const
@@ -87,7 +87,7 @@ export const LENS_ZH: Record<LensId, string> = {
 // 主组件
 // ------------------------------
 export default function AppShell({ user }: { user: User | null }) {
-  const { theme, setTheme, lang, setLang, setMode, activeLens, setActiveLens } = useApp()
+  const { theme, setTheme, lang, setLang, mode, setMode, activeLens, setActiveLens } = useApp()
   const [activePage, setActivePage] = useState<PageId>('frontier')
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null)
   const [collapsed, setCollapsed] = useState(false)
@@ -232,8 +232,12 @@ export default function AppShell({ user }: { user: User | null }) {
               <div className="user-menu">
                 <div className="user-menu-label">{lang === 'zh' ? '视图模式' : 'View Mode'}</div>
                 <div className="user-menu-modes">
-                  <button className="user-menu-mode-btn" onClick={() => setMode('os')}><Monitor size={13} /> OS</button>
-                  <button className="user-menu-mode-btn active"><Globe size={13} /> Web</button>
+                  <button className={`user-menu-mode-btn ${mode === 'os' ? 'active' : ''}`} onClick={() => setMode('os')}>
+                    <Monitor size={13} /> OS
+                  </button>
+                  <button className={`user-menu-mode-btn ${mode === 'web' ? 'active' : ''}`} onClick={() => setMode('web')}>
+                    <Globe size={13} /> Web
+                  </button>
                 </div>
                 <button onClick={() => supabase.auth.signOut()}><LogOut size={14} />{lang === 'zh' ? '退出登录' : 'Sign out'}</button>
               </div>
@@ -251,7 +255,7 @@ export default function AppShell({ user }: { user: User | null }) {
             <div className="brand-block">
               <span className="brand-name">{lang === 'zh' ? '帆迹' : 'Vela AI'}</span>
               <span className="brand-slogan">
-                {lang === 'zh' ? '· 探索AI世界' : '– Explore AI World'}
+                {lang === 'zh' ? '探索AI世界' : 'Explore AI World'}
               </span>
             </div>
           </div>
@@ -307,7 +311,7 @@ export default function AppShell({ user }: { user: User | null }) {
         .app-container { display: flex; flex-direction: row; height: 100vh; background: var(--surface); color: var(--ink); overflow: hidden; }
 
         /* Sidebar */
-        .sidebar { width:240px; background: var(--card); border-right:1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.2s; overflow: hidden; }
+        .sidebar { width:180px; background: var(--card); border-right:1px solid rgba(0,0,0,0.06); display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.2s; overflow: hidden; }
         .sidebar.collapsed { width:60px; }
         .sidebar-overlay { display: none; position: fixed; inset:0; background: rgba(0,0,0,0.4); z-index:9; }
         .sidebar-inner { height: 100%; display: flex; flex-direction: column; }
@@ -315,9 +319,10 @@ export default function AppShell({ user }: { user: User | null }) {
         .sidebar-toggle-btn { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--ink2); }
         .logo-text { font-family: 'Noto Serif SC', serif; font-weight:700; font-size:16px; color: var(--ink); white-space: nowrap; }
         .logo-text.en { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight:800; font-size:18px; }
-        .brand-block { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
-        .brand-name { font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 16px; color: var(--ink); }
-        .brand-slogan { font-size: 13px; color: var(--muted); font-weight: 400; letter-spacing: 0.02em; }
+        .brand-block { display: flex; align-items: center; gap: 10px; white-space: nowrap; height: 100%; border-radius: 4px; }
+        .brand-name { font-family: 'Noto Serif SC', serif; font-weight: 900; font-size: 22px; color: #1a1a1a; letter-spacing: 0.05em; text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1); }
+        .brand-slogan { font-family: 'Outfit', sans-serif; font-size: 11px; color: #8a8a8e; font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; margin-top: 6px; position: relative; padding-left: 10px; }
+        .brand-slogan::before { content: ""; position: absolute; left: 0; top: 15%; height: 70%; width: 1px; background: #d1d1d6; }
         .nav-section { padding:8px 16px; font-size:11px; color: var(--muted); text-transform: uppercase; letter-spacing:0.5px; }
         .nav-item { display: flex; align-items: center; gap:10px; height:40px; padding:0 16px; border-radius:8px; cursor:pointer; background:none; border:none; color: var(--muted); font-size:14px; line-height:1; text-align:left; margin:2px 8px; width: calc(100% - 16px); white-space: nowrap; overflow: hidden; transition: background 0.15s, color 0.15s; }
         .sidebar.collapsed .nav-item { justify-content: center; padding: 0; width: 36px; margin: 2px 12px; }
@@ -364,7 +369,7 @@ export default function AppShell({ user }: { user: User | null }) {
 
         /* Mobile */
         @media (max-width: 768px) {
-          .sidebar { position: fixed; left:0; top:0; bottom:0; transform: translateX(-100%); transition: transform 0.2s; z-index:99; width:240px !important; }
+          .sidebar { position: fixed; left:0; top:0; bottom:0; transform: translateX(-100%); transition: transform 0.2s; z-index:99; width:180px !important; }
           .sidebar.mobile-open { transform: translateX(0); }
           .sidebar-overlay { display: block; }
           .close-mobile { display: flex; }
