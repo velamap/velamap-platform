@@ -26,7 +26,7 @@ export default function SharedDocView({ pageId, initialTopic = null, inOS = fals
     setIsLoading(true);
     setMdxSource(null);
 
-    fetch(`/api/content?topic=${selectedTopic}&lens=${activeLens}`)
+    fetch(`/api/content?topic=${selectedTopic}&lens=${activeLens}&lang=${lang}`)
       .then(res => res.json())
       .then(data => {
         if (!isMounted) return;
@@ -39,18 +39,24 @@ export default function SharedDocView({ pageId, initialTopic = null, inOS = fals
         if (isMounted) setIsLoading(false);
       });
     return () => { isMounted = false; };
-  }, [selectedTopic, activeLens]);
+  }, [selectedTopic, activeLens, lang]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Find all h2 inside this specific view to avoid cross-window conflict
       const headings = document.querySelectorAll('.doc-main h2')
-      const toc = Array.from(headings).map(h => ({
-        id: h.id || '',
-        text: h.textContent || ''
-      })).filter(item => item.text.trim() !== '')
+      const toc = Array.from(headings).map(h => {
+        // Auto-assign id if missing (e.g. headings rendered from GitHub Markdown)
+        if (!h.id && h.textContent) {
+          h.id = h.textContent.trim()
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')   // strip special chars
+            .replace(/\s+/g, '-')       // spaces → hyphens
+            .replace(/-+/g, '-')
+        }
+        return { id: h.id, text: h.textContent || '' }
+      }).filter(item => item.text.trim() !== '')
       setDynamicToc(toc)
-    }, 100)
+    }, 300)   // slightly longer wait for MDX to finish rendering
     return () => clearTimeout(timer)
   }, [selectedTopic, activeLens, mdxSource])
 

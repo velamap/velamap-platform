@@ -2,4 +2,30 @@
 title: RAG 概念
 ---
 
+## AI Overview
+
+**RAG (Retrieval-Augmented Generation)** combines the language fluency of Large Language Models (LLMs) with the precision of information retrieval. Instead of relying solely on the model's training data, RAG queries an external knowledge base at inference time, grounding the model's response in factual, up-to-date sources.
+
+## Knowledge Structure
+
 <RagConceptual />
+
+## Core Components
+
+RAG systems are built around three tightly coupled elements:
+
+- **Embedding Model** — Converts raw text (documents and queries) into high-dimensional vectors that capture semantic meaning.
+- **Vector Database** — Stores these vectors and performs fast approximate nearest-neighbor search to find relevant chunks.
+- **Retriever + LLM** — The retriever selects the top-k most relevant chunks; the LLM then synthesizes a grounded, fluent response.
+
+## Why RAG Matters
+
+Traditional LLMs hallucinate because they can only rely on knowledge seen during training. RAG solves this by decoupling the *knowledge store* from the *reasoning engine*, enabling:
+
+1. **Fresh information** — knowledge base can be updated without retraining
+2. **Source attribution** — responses can cite exact documents
+3. **Cost efficiency** — smaller models can be highly capable with good retrieval
+
+## Explore Next
+
+Click on the nodes in the graph above to explore how each component relates to the overall RAG pipeline. Then dive into the **Mechanical** lens to see how data flows step-by-step through a real RAG system.
