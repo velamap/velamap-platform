@@ -8,7 +8,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://velamap.com}
     ports:
-      - "8000:8000"
+      - "8201:8000"
 
   # pathway (Go) — 暂时禁用，内存占用过高
   # pathway:
@@ -19,7 +19,7 @@ services:
   #     ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://velamap.com}
   #     PORT: "8080"
   #   ports:
-  #     - "8080:8080"
+  #     - "8202:8080"
 
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY}/frontend:latest
@@ -28,6 +28,6 @@ services:
       NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
     ports:
-      - "3000:3000"
+      - "8200:3000"
     depends_on:
       - api
