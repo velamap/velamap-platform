@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const API_BASE = process.env.INTERNAL_API_URL ?? 'http://api:8000'
+const API_BASE = process.env.INTERNAL_API_URL ?? 'http://backend:8000'
 
 export async function GET(_req: Request, { params }: { params: { slug: string } }) {
   try {
