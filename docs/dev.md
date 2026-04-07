@@ -1,3 +1,5 @@
+***
+
 # Dev Guide — 本地开发快速上手
 
 ## 前置条件
@@ -12,14 +14,14 @@ docker --version
 docker ps
 ```
 
----
+***
 
 ## 首次启动
 
 ```bash
 # 清空旧数据，全量重建（首次或重置时用）
-docker-compose -f docker-compose.dev.yml down -v
-docker-compose -f docker-compose.dev.yml up -d --build
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d --build
 ```
 
 启动后等待约 30 秒，访问：
@@ -27,27 +29,27 @@ docker-compose -f docker-compose.dev.yml up -d --build
 - API：http://localhost:8000/docs
 - PostgreSQL：localhost:5432
 
----
+***
 
 ## 日常开发
 
 ```bash
 # 只重建前端（改了前端代码后）
-docker-compose -f docker-compose.dev.yml up -d --build frontend
+docker compose -f docker-compose.dev.yml up -d --build frontend
 
 # 只重建后端（改了 backend/python/ 后）
-docker-compose -f docker-compose.dev.yml up -d --build api
+docker compose -f docker-compose.dev.yml up -d --build api
 
 # 查看所有服务状态
-docker-compose -f docker-compose.dev.yml ps
+docker compose -f docker-compose.dev.yml ps
 
 # 查看日志
-docker-compose -f docker-compose.dev.yml logs frontend
-docker-compose -f docker-compose.dev.yml logs api
-docker-compose -f docker-compose.dev.yml logs postgres
+docker compose -f docker-compose.dev.yml logs frontend
+docker compose -f docker-compose.dev.yml logs api
+docker compose -f docker-compose.dev.yml logs postgres
 ```
 
----
+***
 
 ## 验证接口
 
@@ -62,7 +64,7 @@ curl http://localhost:8000/api/concepts
 curl http://localhost:8000/api/concept/rag
 ```
 
----
+***
 
 ## 数据管理
 
@@ -85,19 +87,19 @@ python3 db/seed.py from-json db/seed_example.json
 POSTGRES_HOST=localhost python3 db/seed.py list
 ```
 
----
+***
 
 ## 重置数据库
 
 ```bash
 # 清空 volume，重新执行 sql/init.sql
-docker-compose -f docker-compose.dev.yml down -v
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 修改了 `sql/init.sql` 后必须执行上面两条，否则不会重新初始化。
 
----
+***
 
 ## 内容说明
 
@@ -108,10 +110,12 @@ docker-compose -f docker-compose.dev.yml up -d
 
 新增概念后，若 GitHub 无对应文件，用 `python3 db/seed.py add-content <slug>` 写入本地 MDX 即可。
 
----
+***
 
 ## 停止服务
 
 ```bash
-docker-compose -f docker-compose.dev.yml down
+docker compose -f docker-compose.dev.yml down
 ```
+
+***
