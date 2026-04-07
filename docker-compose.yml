@@ -20,11 +20,8 @@ services:
     image: ${GITHUB_REPOSITORY:-velamap/platform}/api:latest
     restart: unless-stopped
     environment:
-      DATABASE_URL: ${DATABASE_URL:-}
-      POSTGRES_USER: ${POSTGRES_USER:-vela_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vela_secure_pass}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-vela_user}:${POSTGRES_PASSWORD:-vela_secure_pass}@postgres/${POSTGRES_DB:-velamap}
       POSTGRES_HOST: postgres
-      POSTGRES_DB: ${POSTGRES_DB:-velamap}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://velamap.com}
     ports:
       - "8201:8000"
