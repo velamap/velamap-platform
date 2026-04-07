@@ -14,8 +14,9 @@ const nextConfig = {
       // { source: '/api/lineages', destination: 'http://127.0.0.1:8080/api/lineages' },
 
       // Python backend — 主应用 (profile / tasks / group / stats)
+      // 注意：排除已有 Next.js Route Handler 的路径（nav / concept / content）
       {
-        source: '/api/:path*',
+        source: '/api/:path((?!nav|concept|content).*)',
         destination: 'http://127.0.0.1:8000/api/:path*',
       },
     ]

@@ -33,7 +33,7 @@ export function AppProvider({ children, defaultMode = 'web' }: { children: React
 
   useEffect(() => {
     const title = lang === 'zh'
-      ? '帆迹 · 探索AI世界'
+      ? '有帆 · 探索AI世界'
       : 'Vela AI – Explore AI World'
     document.title = title
   }, [lang])

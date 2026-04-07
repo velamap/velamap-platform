@@ -70,7 +70,7 @@ if "useMemo" not in appshell:
 
 # Update Sidebar header and Remove sidebar search
 sidebar_header_old = """          <div className="sidebar-header">
-            {!collapsed && <div className="logo-text">{lang === 'zh' ? '帆迹' : 'Vela AI'}</div>}
+            {!collapsed && <div className="logo-text">{lang === 'zh' ? '有帆' : 'Vela AI'}</div>}
             <button className="close-mobile" onClick={() => setMobileSidebarOpen(false)}><X size={18} /></button>
             <button className="toggle-desktop" onClick={() => setCollapsed(!collapsed)}>
               {collapsed ? <SidebarOpen size={18} /> : <SidebarClose size={18} />}
@@ -83,7 +83,7 @@ sidebar_header_old = """          <div className="sidebar-header">
           </div>"""
           
 sidebar_header_new = """          <div className="sidebar-header" style={{ justifyContent: collapsed ? 'center' : 'space-between' }}>
-            {!collapsed && <div className="logo-text" style={{ fontSize: '18px', letterSpacing: '0.05em' }}>{lang === 'zh' ? '帆迹' : 'Vela AI'}</div>}
+            {!collapsed && <div className="logo-text" style={{ fontSize: '18px', letterSpacing: '0.05em' }}>{lang === 'zh' ? '有帆' : 'Vela AI'}</div>}
             <button className="close-mobile" onClick={() => setMobileSidebarOpen(false)}><X size={18} /></button>
             <button className="toggle-desktop" onClick={() => setCollapsed(!collapsed)} style={{ background: 'transparent', border: 'none', color: 'var(--muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, borderRadius: 6 }} title={collapsed ? '展开' : '收起'}>
               {collapsed ? <PanelLeft size={20} /> : <PanelLeftClose size={20} />}

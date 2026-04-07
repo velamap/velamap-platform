@@ -82,7 +82,7 @@ export default function AppShell() {
           setActivePage(data.categories[0].id)
         }
       })
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   useKeyboardShortcuts([{
@@ -148,7 +148,7 @@ export default function AppShell() {
         <div className="top-bar">
           <div className="top-bar-left">
             <div className="brand-block">
-              <span className="brand-name">{lang === 'zh' ? '帆迹' : 'Vela AI'}</span>
+              <span className="brand-name">{lang === 'zh' ? '有帆' : 'Vela AI'}</span>
               <span className="brand-slogan">{lang === 'zh' ? '探索AI世界' : 'Explore AI World'}</span>
             </div>
           </div>

@@ -221,7 +221,7 @@ function LoginContent() {
   const { t } = useApp()
   return (
     <div className="wc-login">
-      <div className="wc-login-logo">帆迹</div>
+      <div className="wc-login-logo">有帆</div>
       <div className="wc-login-title">{t('AI 知识图谱平台', 'AI Knowledge Platform')}</div>
       <div className="wc-login-sub">{t('登录功能暂未开放', 'Login coming soon')}</div>
     </div>
@@ -244,7 +244,7 @@ export default function Desktop() {
     fetch('/api/nav')
       .then(r => r.json())
       .then(data => { if (data.categories?.length) setNavData(data.categories) })
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   useEffect(() => {
@@ -303,7 +303,7 @@ export default function Desktop() {
       {/* Nav */}
       <nav className="desktop-nav">
         <div className={`desktop-logo ${lang === 'en' ? 'en' : ''}`}>
-          {lang === 'zh' ? '帆迹' : 'Vela AI'}
+          {lang === 'zh' ? '有帆' : 'Vela AI'}
         </div>
         <div className="nav-right-controls">
           <button className="nav-icon-btn" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} title={t('切换主题', 'Toggle theme')}>
