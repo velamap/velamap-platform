@@ -5,6 +5,7 @@ import { ChevronRight, Home } from 'lucide-react'
 import { useApp, type LensId } from '@/lib/appContext'
 import { MDXRemote } from 'next-mdx-remote'
 import RagConceptual from './RagConceptual'
+import ConceptGraph from './ConceptGraph'
 import { LENS_ICONS, LENS_ZH, getIcon, type NavTopic } from './AppShell'
 
 interface Props {
@@ -22,6 +23,7 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
   const [mdxSource, setMdxSource] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [conceptDetail, setConceptDetail] = useState<any>(null)
+  const [showGraph, setShowGraph] = useState(false)
 
   useEffect(() => { setSelectedTopic(initialTopic) }, [pageId, initialTopic])
 
@@ -65,25 +67,36 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
 
   return (
     <div className={`page-body ${inOS ? 'in-os' : ''}`}>
-      <div className="breadcrumbs">
-        {inOS ? (
-          <button onClick={() => setSelectedTopic(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--muted)', fontSize: 13 }}>
-            <Home size={14} style={{ marginRight: 4 }} /> {lang === 'zh' ? '返回模块主页' : 'Back'}
+      <div className="doc-header">
+        <div className="breadcrumbs">
+          {inOS ? (
+            <button onClick={() => setSelectedTopic(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--muted)', fontSize: 13 }}>
+              <Home size={14} style={{ marginRight: 4 }} /> {lang === 'zh' ? '返回模块主页' : 'Back'}
+            </button>
+          ) : (
+            <>
+              <Home size={14} />
+              <ChevronRight size={12} />
+              <span>{lang === 'zh' ? pageLabel.zh : pageLabel.en}</span>
+            </>
+          )}
+          {selectedTopic && (
+            <>
+              <ChevronRight size={12} />
+              <span>{lang === 'zh' ? currentTopic?.zh : currentTopic?.en}</span>
+              <ChevronRight size={12} />
+              <span className="active">{lang === 'zh' ? LENS_ZH[activeLens] : activeLens}</span>
+            </>
+          )}
+        </div>
+        
+        {selectedTopic && conceptDetail && (
+          <button 
+            className={`graph-toggle ${showGraph ? 'active' : ''}`}
+            onClick={() => setShowGraph(!showGraph)}
+          >
+            {lang === 'zh' ? (showGraph ? '收起图谱' : '显示图谱') : (showGraph ? 'Hide Graph' : 'Show Graph')}
           </button>
-        ) : (
-          <>
-            <Home size={14} />
-            <ChevronRight size={12} />
-            <span>{lang === 'zh' ? pageLabel.zh : pageLabel.en}</span>
-          </>
-        )}
-        {selectedTopic && (
-          <>
-            <ChevronRight size={12} />
-            <span>{lang === 'zh' ? currentTopic?.zh : currentTopic?.en}</span>
-            <ChevronRight size={12} />
-            <span className="active">{lang === 'zh' ? LENS_ZH[activeLens] : activeLens}</span>
-          </>
         )}
       </div>
 
@@ -120,6 +133,15 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
           </div>
 
           <div className="doc-main">
+            {showGraph && conceptDetail && (
+              <div style={{ marginBottom: 24 }}>
+                <ConceptGraph 
+                  conceptDetail={conceptDetail} 
+                  onNodeClick={(slug: string) => setSelectedTopic(slug)}
+                  lang={lang as 'zh' | 'en'}
+                />
+              </div>
+            )}
             {isLoading ? (
               <div style={{ color: 'var(--muted)', marginTop: '20px' }}>Loading content...</div>
             ) : mdxSource ? (
@@ -169,8 +191,12 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
       <style jsx global>{`
         .page-body { flex:1; overflow-y: auto; padding:24px 32px; height: 100%; display: flex; flex-direction: column; background: var(--surface); }
         .page-body.in-os { padding: 12px 20px; background: transparent; }
-        .breadcrumbs { display: flex; align-items: center; gap:6px; font-size:13px; color: var(--muted); margin-bottom:20px; flex-shrink: 0; }
+        .doc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
+        .breadcrumbs { display: flex; align-items: center; gap:6px; font-size:13px; color: var(--muted); margin-bottom:0 !important; }
         .breadcrumbs .active { color: var(--teal); font-weight:600; }
+        .graph-toggle { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--teal); background: none; color: var(--teal); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .graph-toggle:hover { background: var(--teal-light); }
+        .graph-toggle.active { background: var(--teal); color: white; }
         .card-grid-page h1 { font-size:24px; font-weight:700; margin-bottom:24px; color: var(--ink); }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
         .topic-card { display: flex; align-items: center; gap:12px; padding:16px 20px; height:88px; background: var(--card); border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:0.15s; overflow:hidden; }

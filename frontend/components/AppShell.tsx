@@ -70,6 +70,7 @@ export default function AppShell() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
+  const [navVersion, setNavVersion] = useState(0)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   // 加载导航数据
@@ -133,7 +134,12 @@ export default function AppShell() {
               <button
                 key={cat.id}
                 className={`nav-item ${activePage === cat.id ? 'active' : ''}`}
-                onClick={() => { setActivePage(cat.id); setSearchTargetTopic(null); setMobileSidebarOpen(false) }}
+                onClick={() => {
+                  setNavVersion(v => v + 1);
+                  setActivePage(cat.id);
+                  setSearchTargetTopic(null);
+                  setMobileSidebarOpen(false);
+                }}
               >
                 <Icon size={16} style={{ flexShrink: 0 }} />
                 {!collapsed && <span>{lang === 'zh' ? cat.zhLabel : cat.enLabel}</span>}
@@ -198,7 +204,7 @@ export default function AppShell() {
 
         {activeCategory && (
           <SharedDocView
-            key={`${activePage}-${searchTargetTopic || 'none'}`}
+            key={`${activePage}-${searchTargetTopic || 'none'}-${navVersion}`}
             pageId={activePage}
             pageLabel={{ zh: activeCategory.zhLabel, en: activeCategory.enLabel }}
             topics={activeCategory.topics}

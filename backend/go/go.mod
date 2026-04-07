@@ -1,4 +1,4 @@
-module github.com/soar-ai/backend
+module github.com/vela-ai/backend
 
 go 1.24
 
