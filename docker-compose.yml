@@ -15,7 +15,7 @@ services:
         limits:
           memory: 256M
 
-  api:
+  backend:
     build: ./backend/python
     image: ${GITHUB_REPOSITORY:-velamap/platform}/api:latest
     restart: unless-stopped
@@ -39,11 +39,11 @@ services:
     image: ${GITHUB_REPOSITORY:-velamap/platform}/frontend:latest
     restart: unless-stopped
     environment:
-      INTERNAL_API_URL: http://api:8000
+      INTERNAL_API_URL: http://backend:8000
     ports:
       - "8200:3000"
     depends_on:
-      - api
+      - backend
     networks: [velamap]
     deploy:
       resources:
