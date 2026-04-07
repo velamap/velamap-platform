@@ -6,12 +6,9 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { useDrag } from '@use-gesture/react'
 import { useSpring, animated } from '@react-spring/web'
 import {
-  Telescope, LayoutGrid, Bot, Cpu, Server, LogIn, LogOut,
-  X, Minus, Maximize2, Sun, Moon, Languages, Monitor, Globe,
+  X, Minus, Maximize2, Sun, Moon, Monitor, Globe,
   Settings
 } from 'lucide-react'
-import type { User as SupabaseUser } from '@supabase/supabase-js'
-import Image from 'next/image'
 import { useApp } from '@/lib/appContext'
 
 /* ─────────────────────────────────────
@@ -178,17 +175,8 @@ function DesktopIconItem({ icon: def, onOpen }: { icon: DesktopIcon; onOpen: (de
 /* ─────────────────────────────────────
    Settings Panel (Windows Start-menu style)
 ───────────────────────────────────── */
-function SettingsPanel({ onClose, user }: { onClose: () => void; user?: import('@supabase/supabase-js').User | null }) {
+function SettingsPanel({ onClose }: { onClose: () => void }) {
   const { lang, setLang, theme, setTheme, mode, setMode, t } = useApp()
-
-  async function handleSignOut() {
-    const { createClient } = await import('@/lib/supabase/client')
-    await createClient().auth.signOut()
-    window.location.reload()
-  }
-
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined
-  const displayName = (user?.user_metadata?.name as string) || user?.email || ''
 
   return (
     <div className="settings-panel">
@@ -199,12 +187,8 @@ function SettingsPanel({ onClose, user }: { onClose: () => void; user?: import('
 
       <div className="settings-section">{lang === 'zh' ? '语言' : 'Language'}</div>
       <div className="settings-row">
-        <button className={`settings-opt ${lang === 'zh' ? 'active' : ''}`} onClick={() => setLang('zh')}>
-          简体中文
-        </button>
-        <button className={`settings-opt ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang('en')}>
-          English
-        </button>
+        <button className={`settings-opt ${lang === 'zh' ? 'active' : ''}`} onClick={() => setLang('zh')}>简体中文</button>
+        <button className={`settings-opt ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang('en')}>English</button>
       </div>
 
       <div className="settings-section">{t('外观', 'Appearance')}</div>
@@ -226,54 +210,20 @@ function SettingsPanel({ onClose, user }: { onClose: () => void; user?: import('
           <Globe size={13} /> Web
         </button>
       </div>
-
-      {user && (
-        <>
-          <div className="settings-section">{t('账号', 'Account')}</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px 4px' }}>
-            {avatarUrl
-              ? <Image src={avatarUrl} alt="avatar" width={28} height={28} style={{ borderRadius: '50%', flexShrink: 0 }} />
-              : <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#fff', flexShrink: 0 }}>{displayName[0]?.toUpperCase()}</div>
-            }
-            <span style={{ fontSize: 12, color: 'var(--ink)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</span>
-            <button
-              onClick={handleSignOut}
-              title={t('退出登录', 'Sign out')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', padding: 4, display: 'flex', alignItems: 'center' }}
-            >
-              <LogOut size={14} />
-            </button>
-          </div>
-        </>
-      )}
     </div>
   )
 }
 
-import { TOPICS, type PageId } from './AppShell'
+import { type NavCategory, type NavTopic, getIcon } from './AppShell'
 
 
 function LoginContent() {
   const { t } = useApp()
-  async function handleLogin() {
-    const { createClient } = await import('@/lib/supabase/client')
-    const supabase = createClient()
-    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${location.origin}/auth/callback` } })
-  }
   return (
     <div className="wc-login">
       <div className="wc-login-logo">帆迹</div>
-      <div className="wc-login-title">{t('开始你的 AI 转型之旅', 'Start Your AI Transformation')}</div>
-      <div className="wc-login-sub">{t('每日 5 分钟 · 小组打卡 · 成长档案', 'Daily 5min · Group check-in · Growth profile')}</div>
-      <button className="wc-google-btn" onClick={handleLogin}>
-        <svg width="16" height="16" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-        </svg>
-        {t('使用 Google 账号登录', 'Sign in with Google')}
-      </button>
+      <div className="wc-login-title">{t('AI 知识图谱平台', 'AI Knowledge Platform')}</div>
+      <div className="wc-login-sub">{t('登录功能暂未开放', 'Login coming soon')}</div>
     </div>
   )
 }
@@ -281,13 +231,21 @@ function LoginContent() {
 /* ─────────────────────────────────────
    Main Desktop
 ───────────────────────────────────── */
-export default function Desktop({ user }: { user?: SupabaseUser | null }) {
-  const { lang, theme, setTheme, mode, setMode, t } = useApp()
+export default function Desktop() {
+  const { lang, theme, setTheme, t } = useApp()
   const [windows, setWindows] = useState<AppWindow[]>([])
   const [showSettings, setShowSettings] = useState(false)
+  const [navData, setNavData] = useState<NavCategory[]>([])
   const settingsRef = useRef<HTMLDivElement>(null)
   const settingsBtnRef = useRef<HTMLDivElement>(null)
   const homeOpenedRef = useRef(false)
+
+  useEffect(() => {
+    fetch('/api/nav')
+      .then(r => r.json())
+      .then(data => { if (data.categories?.length) setNavData(data.categories) })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (!showSettings) return
@@ -300,20 +258,14 @@ export default function Desktop({ user }: { user?: SupabaseUser | null }) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [showSettings])
 
-  async function handleLogin() {
-    const { createClient } = await import('@/lib/supabase/client')
-    const supabase = createClient()
-    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${location.origin}/auth/callback` } })
-  }
-
-  const ICONS: DesktopIcon[] = [
-    { id: 'frontier', label: t('前沿探索', 'Frontier'), icon: <Telescope size={22} color="#fff" />, color: '#1a1a2e', content: <SharedDocView pageId="frontier" inOS={true} />, defaultW: 900, defaultH: 600 },
-    { id: 'applications', label: t('应用方案', 'Applications'), icon: <LayoutGrid size={22} color="#fff" />, color: '#5b4fcf', content: <SharedDocView pageId="applications" inOS={true} />, defaultW: 900, defaultH: 600 },
-    { id: 'execution', label: t('工程化', 'Engineering'), icon: <Cpu size={22} color="#fff" />, color: '#d4890a', content: <SharedDocView pageId="execution" inOS={true} />, defaultW: 900, defaultH: 600 },
-    { id: 'agents', label: t('智能体', 'Agents'), icon: <Bot size={22} color="#fff" />, color: '#048a81', content: <SharedDocView pageId="agents" inOS={true} />, defaultW: 900, defaultH: 600 },
-    { id: 'ai-infra', label: t('基础设施', 'AI Infra'), icon: <Server size={22} color="#fff" />, color: '#00a8cc', content: <SharedDocView pageId="ai-infra" inOS={true} />, defaultW: 900, defaultH: 600 },
-    ...(!user ? [{ id: 'login', label: t('登录', 'Login'), icon: <LogIn size={22} color="#fff" />, color: '#1a1a2e', content: <LoginContent />, defaultW: 360, defaultH: 320 }] : []),
-  ]
+  const ICONS: DesktopIcon[] = navData.map(cat => ({
+    id: cat.id,
+    label: lang === 'zh' ? cat.zhLabel : cat.enLabel,
+    icon: (() => { const Icon = getIcon(cat.icon); return <Icon size={22} color="#fff" /> })(),
+    color: ({ frontier: '#1a1a2e', applications: '#5b4fcf', execution: '#d4890a', agents: '#048a81', 'ai-infra': '#00a8cc' } as Record<string, string>)[cat.id] ?? '#333',
+    content: <SharedDocView pageId={cat.id} pageLabel={{ zh: cat.zhLabel, en: cat.enLabel }} topics={cat.topics} inOS={true} />,
+    defaultW: 900, defaultH: 600,
+  }))
 
   const openWindow = useCallback((def: DesktopIcon) => {
     setWindows(prev => {
@@ -354,11 +306,6 @@ export default function Desktop({ user }: { user?: SupabaseUser | null }) {
           {lang === 'zh' ? '帆迹' : 'Vela AI'}
         </div>
         <div className="nav-right-controls">
-          {!user && (
-            <button className="nav-login-btn" onClick={handleLogin}>
-              <LogIn size={13} /> {t('立即开始', 'Get Started')}
-            </button>
-          )}
           <button className="nav-icon-btn" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} title={t('切换主题', 'Toggle theme')}>
             {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
           </button>
@@ -384,7 +331,7 @@ export default function Desktop({ user }: { user?: SupabaseUser | null }) {
       {/* Settings panel — at root level, always on top */}
       {showSettings && (
         <div ref={settingsRef} style={{ position: 'fixed', bottom: 100, left: 16, zIndex: 99999 }}>
-          <SettingsPanel onClose={() => setShowSettings(false)} user={user} />
+          <SettingsPanel onClose={() => setShowSettings(false)} />
         </div>
       )}
 

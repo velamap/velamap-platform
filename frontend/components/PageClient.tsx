@@ -1,21 +1,19 @@
 'use client'
 
-import type { User } from '@supabase/supabase-js'
 import { AppProvider, useApp } from '@/lib/appContext'
 import Desktop from './Desktop'
 import AppShell from './AppShell'
 
-function Inner({ user }: { user: User | null }) {
+function Inner() {
   const { mode } = useApp()
-
-  if (mode === 'web') return <AppShell user={user} />
-  return <Desktop user={user} />
+  if (mode === 'web') return <AppShell />
+  return <Desktop />
 }
 
-export default function PageClient({ user }: { user: User | null }) {
+export default function PageClient() {
   return (
     <AppProvider defaultMode="web">
-      <Inner user={user} />
+      <Inner />
     </AppProvider>
   )
 }

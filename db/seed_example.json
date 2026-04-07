@@ -1,0 +1,30 @@
+{
+  "categories": [
+    {
+      "slug": "security",
+      "zh_label": "AI 安全",
+      "en_label": "AI Safety",
+      "icon": "Shield",
+      "topics": [
+        {
+          "slug": "alignment",
+          "zh_name": "对齐",
+          "en_name": "Alignment",
+          "icon": "Target",
+          "zh_desc": "确保 AI 行为符合人类意图",
+          "en_desc": "Ensuring AI behavior aligns with human intent",
+          "mdx_content": {
+            "conceptual": {
+              "title": "对齐 · 概念",
+              "body": "## 什么是对齐\n\nAI 对齐（Alignment）是指确保 AI 系统的目标和行为与人类的意图、价值观保持一致。\n\n## 核心问题\n\n- **目标错位**：AI 优化的目标与人类真实意图不符\n- **价值对齐**：如何将复杂的人类价值观编码进模型\n- **可解释性**：理解模型为何做出某个决策\n\n## 主要方法\n\n- RLHF（人类反馈强化学习）\n- Constitutional AI\n- Debate 方法"
+            },
+            "mechanical": {
+              "title": "对齐 · 机制",
+              "body": "## RLHF 流程\n\n1. 预训练基础模型\n2. 收集人类偏好数据（比较两个输出哪个更好）\n3. 训练奖励模型\n4. 用 PPO 算法微调语言模型\n\n## Constitutional AI\n\nAnthropic 提出的方法，通过一组原则（constitution）让模型自我批评和修正。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,86 +1,76 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ChevronRight, Home, BookOpen, Code, Wrench, BarChart, History, AlertTriangle } from 'lucide-react'
+import { ChevronRight, Home } from 'lucide-react'
 import { useApp, type LensId } from '@/lib/appContext'
 import { MDXRemote } from 'next-mdx-remote'
 import RagConceptual from './RagConceptual'
-import { TOPICS, NAV_ITEMS, type PageId, LENS_ICONS, LENS_ZH } from './AppShell'
+import { LENS_ICONS, LENS_ZH, getIcon, type NavTopic } from './AppShell'
 
-export default function SharedDocView({ pageId, initialTopic = null, inOS = false }: { pageId: PageId, initialTopic?: string | null, inOS?: boolean }) {
+interface Props {
+  pageId: string
+  pageLabel: { zh: string; en: string }
+  topics: NavTopic[]
+  initialTopic?: string | null
+  inOS?: boolean
+}
+
+export default function SharedDocView({ pageId, pageLabel, topics, initialTopic = null, inOS = false }: Props) {
   const { lang, activeLens, setActiveLens } = useApp()
   const [selectedTopic, setSelectedTopic] = useState<string | null>(initialTopic)
-  const [dynamicToc, setDynamicToc] = useState<{id: string, text: string}[]>([])
+  const [dynamicToc, setDynamicToc] = useState<{ id: string; text: string }[]>([])
   const [mdxSource, setMdxSource] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Sync when props change (especially useful when key changes or initialTopic changes)
-  useEffect(() => {
-    setSelectedTopic(initialTopic);
-  }, [pageId, initialTopic]);
-
+  useEffect(() => { setSelectedTopic(initialTopic) }, [pageId, initialTopic])
 
   useEffect(() => {
-    if (!selectedTopic || !activeLens) return;
-    let isMounted = true;
-    setIsLoading(true);
-    setMdxSource(null);
-
+    if (!selectedTopic || !activeLens) return
+    let mounted = true
+    setIsLoading(true)
+    setMdxSource(null)
     fetch(`/api/content?topic=${selectedTopic}&lens=${activeLens}&lang=${lang}`)
-      .then(res => res.json())
-      .then(data => {
-        if (!isMounted) return;
-        if (data.source) {
-          setMdxSource(data.source);
-        }
-        setIsLoading(false);
-      })
-      .catch(() => {
-        if (isMounted) setIsLoading(false);
-      });
-    return () => { isMounted = false; };
-  }, [selectedTopic, activeLens, lang]);
+      .then(r => r.json())
+      .then(data => { if (mounted && data.source) setMdxSource(data.source) })
+      .catch(() => {})
+      .finally(() => { if (mounted) setIsLoading(false) })
+    return () => { mounted = false }
+  }, [selectedTopic, activeLens, lang])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const t = setTimeout(() => {
       const headings = document.querySelectorAll('.doc-main h2')
-      const toc = Array.from(headings).map(h => {
-        // Auto-assign id if missing (e.g. headings rendered from GitHub Markdown)
+      setDynamicToc(Array.from(headings).map(h => {
         if (!h.id && h.textContent) {
-          h.id = h.textContent.trim()
-            .toLowerCase()
-            .replace(/[^\w\s-]/g, '')   // strip special chars
-            .replace(/\s+/g, '-')       // spaces → hyphens
-            .replace(/-+/g, '-')
+          h.id = h.textContent.trim().toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
         }
         return { id: h.id, text: h.textContent || '' }
-      }).filter(item => item.text.trim() !== '')
-      setDynamicToc(toc)
-    }, 300)   // slightly longer wait for MDX to finish rendering
-    return () => clearTimeout(timer)
+      }).filter(i => i.text.trim()))
+    }, 300)
+    return () => clearTimeout(t)
   }, [selectedTopic, activeLens, mdxSource])
 
-  const currentTopics = TOPICS[pageId] || []
+  const currentTopic = topics.find(t => t.id === selectedTopic)
   const showDetail = !!selectedTopic
 
   return (
     <div className={`page-body ${inOS ? 'in-os' : ''}`}>
       <div className="breadcrumbs">
         {inOS ? (
-          <button onClick={() => setSelectedTopic(null)} style={{background:'none', border:'none', cursor:'pointer', display:'flex', alignItems:'center', color:'var(--muted)', fontSize: 13}}>
+          <button onClick={() => setSelectedTopic(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--muted)', fontSize: 13 }}>
             <Home size={14} style={{ marginRight: 4 }} /> {lang === 'zh' ? '返回模块主页' : 'Back'}
           </button>
         ) : (
           <>
             <Home size={14} />
             <ChevronRight size={12} />
-            <span>{NAV_ITEMS.find(i => i.id === pageId)?.[lang === 'zh' ? 'zhLabel' : 'enLabel']}</span>
+            <span>{lang === 'zh' ? pageLabel.zh : pageLabel.en}</span>
           </>
         )}
         {selectedTopic && (
           <>
             <ChevronRight size={12} />
-            <span>{TOPICS[pageId]?.find((t: any) => t.id === selectedTopic)?.[lang === 'zh' ? 'zh' : 'en']}</span>
+            <span>{lang === 'zh' ? currentTopic?.zh : currentTopic?.en}</span>
             <ChevronRight size={12} />
             <span className="active">{lang === 'zh' ? LENS_ZH[activeLens] : activeLens}</span>
           </>
@@ -89,10 +79,10 @@ export default function SharedDocView({ pageId, initialTopic = null, inOS = fals
 
       {!showDetail ? (
         <div className="card-grid-page">
-          {!inOS && <h1>{NAV_ITEMS.find(i => i.id === pageId)?.[lang === 'zh' ? 'zhLabel' : 'enLabel']}</h1>}
+          {!inOS && <h1>{lang === 'zh' ? pageLabel.zh : pageLabel.en}</h1>}
           <div className="card-grid">
-            {currentTopics.map((t: any) => {
-              const Icon = t.icon
+            {topics.map(t => {
+              const Icon = getIcon(t.icon)
               return (
                 <div key={t.id} className="topic-card" onClick={() => setSelectedTopic(t.id)}>
                   <div className="card-icon"><Icon size={20} /></div>
@@ -131,20 +121,20 @@ export default function SharedDocView({ pageId, initialTopic = null, inOS = fals
 
           <div className="doc-right">
             <div className="toc-title">{lang === 'zh' ? '目录' : 'Contents'}</div>
-            {dynamicToc.length > 0 ? (
-              dynamicToc.map((item, i) => (
-                <div key={i} className="toc-item" onClick={() => document.getElementById(item.id)?.scrollIntoView({behavior: 'smooth', block: 'start'})} style={{cursor: 'pointer'}}>
-                  {item.text.replace(' Interactive', '')}
-                </div>
-              ))
-            ) : (
-              <div className="empty" style={{fontSize: 12, marginTop: 8}}>
+            {dynamicToc.length > 0 ? dynamicToc.map((item, i) => (
+              <div key={i} className="toc-item" style={{ cursor: 'pointer' }}
+                onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                {item.text.replace(' Interactive', '')}
+              </div>
+            )) : (
+              <div className="empty" style={{ fontSize: 12, marginTop: 8 }}>
                 {lang === 'zh' ? '当前页面无小节目录' : 'No sections'}
               </div>
             )}
           </div>
         </div>
       )}
+
       <style jsx global>{`
         .page-body { flex:1; overflow-y: auto; padding:24px 32px; height: 100%; display: flex; flex-direction: column; background: var(--surface); }
         .page-body.in-os { padding: 12px 20px; background: transparent; }

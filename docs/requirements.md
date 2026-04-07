@@ -3,124 +3,109 @@
 > **版本历史**
 > | 版本 | 日期 | 变更摘要 |
 > |------|------|---------|
-> | v0.3 | 2026-03-26 | 产品定位转型为 AI Knowledge OS；五层知识体系替代任务/打卡 demo |
-> | v0.2 | 2026-03 | 双模式切换、i18n、Settings 面板 |
-> | v0.1 | 2026-03 | 初始版本，任务系统、打卡、成长档案 |
+> | v0.5 | 2026-04-07 | 去除 Supabase 依赖，本地 PostgreSQL，导航数据动态化 |
+> | v0.3 | 2026-03-26 | 产品定位转型为 AI Knowledge OS；五层知识体系 |
+> | v0.1 | 2026-03 | 初始版本 |
 
 ---
 
 ## 1. Background
 
-Vela AI is an **AI Knowledge OS** — a structured knowledge system for AI practitioners and professionals who want to understand and apply AI at depth.
+Vela AI 是一个 **AI 知识图谱平台**，面向 AI 工程师、产品经理和研究者，提供结构化的 AI 知识体系。
 
-The core insight: AI knowledge is fragmented across papers, blogs, and tools. Vela AI organizes it into a layered architecture (Infrastructure → Execution → Agents → Applications) with a Frontier tag system for tracking maturity and relevance.
-
-Target users: AI engineers, product managers, researchers, and knowledge workers building AI-powered systems.
+核心价值：将碎片化的 AI 知识（论文、博客、工具）组织成分层架构，并通过人工定义的上下游关系呈现概念间的依赖与演进。
 
 ## 2. Knowledge Architecture
 
-### 2.1 Four-Layer Model
+### 2.1 导航层级
 
 ```
-AI Infrastructure → Execution → Agents → Applications
+一级分类 (nav_categories)
+  └── 概念卡片 (concepts)
+        └── 内容视角 (lens: conceptual / mechanical / practical / comparative / evolutionary / critical)
 ```
 
-| Layer | Role | Key Concepts |
-|---|---|---|
-| AI Infrastructure | Capability source | Transformer, MoE, vLLM, KV Cache, Datasets |
-| Execution | Core runtime | Orchestration, RAG, Harness Engineering, Observability |
-| Agents | Decision logic | Planning, ReAct, Multi-Agent, Cognitive Modeling |
-| Applications | Use cases | Capability × Domain matrix |
+一级分类当前五个：前沿探索 / 应用方案 / 工程化 / 智能体 / 基础设施。分类和概念均存储在 PostgreSQL，可通过 `db/seed.py` 动态增减。
 
-**Rule**: Each node belongs to exactly one layer. Cross-layer relationships expressed via `edges` table.
+### 2.2 概念关系
 
-### 2.2 Frontier Tag System
+每个概念可定义三类关系：
 
-Frontier is a **tag system**, not a layer. Tags classify nodes by:
-
-| Dimension | Values |
+| 关系类型 | 含义 |
 |---|---|
-| maturity | foundation / mainstream / emerging / speculative |
-| certainty | validated / experimental / speculative |
-| freshness | new / trending / stable |
-| type | research / paradigm / system / application |
+| `upstream` | 前置依赖（理解本概念需要先了解的） |
+| `parallel` | 同级替代或互补方案 |
+| `downstream` | 本概念衍生出的应用或扩展 |
 
-### 2.3 Content Types
+### 2.3 内容视角（Lens）
 
-Each node can have multiple content pieces:
-- `concept` — what it is
-- `guide` — how to use it
-- `playbook` — step-by-step workflow
-- `case_study` — real-world example
-- `failure` — common failure modes
+六个固定视角，前端硬编码（不从数据库取）：
+
+| Lens | 说明 |
+|---|---|
+| conceptual | 概念定义 |
+| mechanical | 工作机制 |
+| practical | 实践指南 |
+| comparative | 横向对比 |
+| evolutionary | 演进历史 |
+| critical | 批判分析 |
 
 ## 3. UI Requirements
 
-### 3.1 OS Mode (Desktop)
+### 3.1 Web 模式（默认）
 
-- Icon grid on left, each icon opens a draggable window
-- Windows: drag to move, resize from any edge/corner (min 280×180px)
-- Maximize/minimize/close controls
-- Multiple windows open simultaneously, z-index stacking
-- Settings panel (bottom-left): language, theme, mode switch, account
+- 可收缩侧边栏（180px ↔ 60px icon-only）
+- 侧边栏导航项从数据库动态加载
+- 概念卡片网格，点击进入详情
+- 详情页左侧 Lens 导航，右侧 TOC
+- 顶部搜索框（⌘K 快捷键），跨分类搜索概念
 
-### 3.2 Web Mode (AppShell)
+### 3.2 OS 模式
 
-- Collapsible sidebar (180px ↔ 56px icon-only)
-- Five navigation items matching the five modules
-- Top nav: theme + language toggles
-- User menu (avatar click): mode switch + sign-out
-- Guest-accessible without login
+- 桌面图标网格，双击打开可拖拽/缩放窗口
+- 窗口内容与 Web 模式完全一致（SharedDocView 复用）
+- 图标和窗口标题从数据库动态加载
 
-### 3.3 Internationalization
+### 3.3 国际化
 
-- Full EN/ZH switching for all UI text
-- Technical terms preserved in English (RAG, Transformer, ReAct, etc.)
-- Translatable: section titles, capability names, domain names, UI labels
+- 全量中英文切换
+- 技术术语保留英文（RAG、Transformer、ReAct 等）
 
-### 3.4 Authentication
+### 3.4 认证（暂时关闭）
 
-- Google OAuth via Supabase
-- Both modes accessible as guest
-- Logged-in users see account info and sign-out in user menu
+- 登录功能已注释，所有内容对访客开放
+- 恢复方式：取消 `page.tsx`、`middleware.ts`、`AppShell.tsx` 中的注释
 
 ## 4. Data Requirements
 
-### 4.1 Node Schema
+### 4.1 数据存储
 
-```sql
-nodes (id, name, slug, layer, sub_layer, description,
-       capabilities[], domains[], maturity, certainty,
-       freshness, type, cost, created_at, updated_at)
-```
+所有导航和概念数据存储在本地 PostgreSQL，不依赖 Supabase 或外部服务。
 
-### 4.2 Content Import
+### 4.2 内容存储
 
-- Content stored as HTML files in `db/content/<slug>/`
-- `node.json` defines node metadata
-- `import.py` script reads directory and writes to Supabase
+概念详情内容（Lens 正文）优先从 GitHub 知识库拉取，fallback 到本地 MDX 文件。
 
-### 4.3 Graph Queries
+### 4.3 数据管理
 
-- Dependency query: `edges WHERE from_node = X AND relation_type = 'depends_on'`
-- Related query: all edges from a node
+- 初始数据：`sql/init.sql`（容器首次启动自动执行）
+- 增量更新：`db/seed.py`（支持交互式和 JSON 批量导入）
+- 数据格式：`db/seed_example.json`
 
 ## 5. Non-Functional Requirements
 
-| Requirement | Target |
+| 需求 | 目标 |
 |---|---|
-| First load | < 2s on broadband |
-| Auth redirect | < 3s round-trip |
-| Animation | 60fps drag/resize interactions |
-| Mode switch | Instant, no page reload |
-| Security | `.env.local` never committed; Supabase RLS for user data |
-| Deployment | Single `docker-compose up` for full stack |
+| 首屏加载 | < 2s |
+| 导航数据加载 | ISR 60s 缓存 |
+| 内存占用 | 三个容器总计 < 768M（1核1G 服务器） |
+| 部署 | 单条 `docker-compose up` 启动全栈 |
+| 数据重置 | `docker-compose down -v && up` |
 
-## 6. Out of Scope (current)
+## 6. Out of Scope（当前）
 
-- Mobile / responsive layout (desktop-first)
-- Real-time collaboration
-- AI-generated content
-- Payment / subscription
-- Recommendation system
-- Neo4j or complex GraphQL
+- 用户账号系统（登录已注释）
+- 实时协作
+- AI 生成内容
+- 付费订阅
+- 移动端响应式

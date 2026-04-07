@@ -1,37 +1,60 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-velamap}
+      POSTGRES_USER: ${POSTGRES_USER:-vela_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vela_secure_pass}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks: [velamap]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
   api:
     build: ./backend/python
     image: ${GITHUB_REPOSITORY:-velamap/platform}/api:latest
     restart: unless-stopped
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${DATABASE_URL:-}
+      POSTGRES_USER: ${POSTGRES_USER:-vela_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vela_secure_pass}
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-velamap}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://velamap.com}
     ports:
       - "8201:8000"
-
-  # pathway (Go) — 暂时禁用，内存占用过高
-  # pathway:
-  #   image: ghcr.io/${GITHUB_REPOSITORY}/pathway:latest
-  #   restart: unless-stopped
-  #   environment:
-  #     DATABASE_URL: ${DATABASE_URL}
-  #     ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://velamap.com}
-  #     PORT: "8080"
-  #   ports:
-  #     - "8202:8080"
+    depends_on:
+      - postgres
+    networks: [velamap]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   frontend:
     build:
       context: ./frontend
-      args:
-        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
     image: ${GITHUB_REPOSITORY:-velamap/platform}/frontend:latest
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      INTERNAL_API_URL: http://api:8000
     ports:
       - "8200:3000"
     depends_on:
       - api
+    networks: [velamap]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+networks:
+  velamap:
+
+volumes:
+  pg_data:

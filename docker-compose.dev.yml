@@ -2,37 +2,50 @@ version: "3.9"
 
 # 本地开发：从源码构建，不依赖 GHCR 镜像
 services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: velamap
+      POSTGRES_USER: vela_user
+      POSTGRES_PASSWORD: vela_secure_pass
+    volumes:
+      - pg_data_dev:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks: [velamap]
+
   api:
     build: ./backend/python
     restart: unless-stopped
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${DATABASE_URL:-}
+      POSTGRES_USER: vela_user
+      POSTGRES_PASSWORD: vela_secure_pass
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: velamap
       ALLOWED_ORIGIN: http://localhost:3000
     ports:
       - "8000:8000"
-
-  # pathway (Go) — 暂时禁用，内存占用过高
-  # pathway:
-  #   build: ./backend/go
-  #   restart: unless-stopped
-  #   environment:
-  #     DATABASE_URL: ${DATABASE_URL}
-  #     ALLOWED_ORIGIN: http://localhost:3000
-  #     PORT: "8080"
-  #   ports:
-  #     - "8080:8080"
+    depends_on:
+      - postgres
+    networks: [velamap]
 
   frontend:
     build:
       context: ./frontend
-      args:
-        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      INTERNAL_API_URL: http://api:8000
     ports:
       - "3000:3000"
     depends_on:
       - api
+    networks: [velamap]
+
+networks:
+  velamap:
+
+volumes:
+  pg_data_dev:
