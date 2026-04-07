@@ -1,6 +1,6 @@
 #!/bin/bash
 # EC2 Ubuntu 24 一次性初始化脚本
-# 运行: bash scripts/ec2-init.sh
+# 运行: bash scripts/init.sh
 
 set -e
 
@@ -20,9 +20,11 @@ sudo usermod -aG docker $USER
 echo "=== 创建 .env 文件 ==="
 cat > ~/velamap-platform/.env << 'EOF'
 GITHUB_REPOSITORY=wuyongpeng/velamap-platform
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-DATABASE_URL=your-supabase-db-connection-string
+POSTGRES_DB=velamap
+POSTGRES_USER=vela_user
+POSTGRES_PASSWORD=vela_secure_pass
+QDRANT_HOST=qdrant
+QDRANT_PORT=6333
 ALLOWED_ORIGIN=https://velamap.com
 EOF
 

@@ -1,0 +1,16 @@
+{
+  "collections": [
+    {
+      "name": "concepts",
+      "vector_size": 1536,
+      "distance": "Cosine",
+      "description": "概念向量索引，用于语义搜索"
+    },
+    {
+      "name": "content",
+      "vector_size": 1536,
+      "distance": "Cosine",
+      "description": "文档内容向量索引"
+    }
+  ]
+}

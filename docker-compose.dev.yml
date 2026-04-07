@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: vela_secure_pass
     volumes:
       - pg_data_dev:/var/lib/postgresql/data
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./db/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "5432:5432"
     networks: [velamap]
@@ -26,10 +26,13 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_DB: velamap
       ALLOWED_ORIGIN: http://localhost:3000
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
     ports:
       - "8000:8000"
     depends_on:
       - postgres
+      - qdrant
     networks: [velamap]
 
   frontend:
@@ -44,8 +47,19 @@ services:
       - api
     networks: [velamap]
 
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data_dev:/qdrant/storage
+    networks: [velamap]
+
 networks:
   velamap:
 
 volumes:
   pg_data_dev:
+  qdrant_data_dev:

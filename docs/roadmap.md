@@ -11,7 +11,7 @@
 
 ## ✅ v0.5 — 本地 PostgreSQL + 动态导航（2026-04-07 完成）
 
-- [x] 去除 Supabase 依赖，改用本地 PostgreSQL 15
+- [x] 改用本地 PostgreSQL 15，Qdrant 向量库
 - [x] 登录功能注释（middleware + page.tsx + AppShell）
 - [x] 新表结构：`nav_categories` + `concepts` + `concept_relations`
 - [x] Python API：`/api/nav`、`/api/concepts`、`/api/concept/{slug}`

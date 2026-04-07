@@ -70,21 +70,26 @@ curl http://localhost:8000/api/concept/rag
 
 ```bash
 # 列出所有概念（含本地 MDX 状态）
-python3 db/seed.py list
+python3 db/postgresql/seed.py list
 
 # 交互式添加概念（含 MDX 内容）
-python3 db/seed.py add-concept
+python3 db/postgresql/seed.py add-concept
 
 # 为已有概念补充 MDX 内容
-python3 db/seed.py add-content <slug>
+python3 db/postgresql/seed.py add-content <slug>
 
 # 从 JSON 批量导入
-python3 db/seed.py from-json db/seed_example.json
+python3 db/postgresql/seed.py from-json db/seed_example.json
 ```
 
 数据库连接默认读取环境变量，本地直连 postgres 容器（5432 已暴露）：
 ```bash
-POSTGRES_HOST=localhost python3 db/seed.py list
+POSTGRES_HOST=localhost python3 db/postgresql/seed.py list
+```
+
+初始化 Qdrant 集合：
+```bash
+QDRANT_HOST=localhost python3 db/qdrant/init_collections.py
 ```
 
 ***
@@ -97,7 +102,7 @@ docker compose -f docker-compose.dev.yml down -v
 docker compose -f docker-compose.dev.yml up -d
 ```
 
-修改了 `sql/init.sql` 后必须执行上面两条，否则不会重新初始化。
+修改了 `db/postgresql/init.sql` 后必须执行上面两条，否则不会重新初始化。
 
 ***
 

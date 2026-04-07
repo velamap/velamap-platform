@@ -21,8 +21,18 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
   const [dynamicToc, setDynamicToc] = useState<{ id: string; text: string }[]>([])
   const [mdxSource, setMdxSource] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [conceptDetail, setConceptDetail] = useState<any>(null)
 
   useEffect(() => { setSelectedTopic(initialTopic) }, [pageId, initialTopic])
+
+  // 点击卡片时通过 REST API 获取概念详情（关系图谱）
+  useEffect(() => {
+    if (!selectedTopic) { setConceptDetail(null); return }
+    fetch(`/api/concept/${selectedTopic}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => setConceptDetail(data))
+      .catch(() => setConceptDetail(null))
+  }, [selectedTopic])
 
   useEffect(() => {
     if (!selectedTopic || !activeLens) return
@@ -130,6 +140,27 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
               <div className="empty" style={{ fontSize: 12, marginTop: 8 }}>
                 {lang === 'zh' ? '当前页面无小节目录' : 'No sections'}
               </div>
+            )}
+
+            {conceptDetail && (
+              <>
+                {(['upstream', 'parallel', 'downstream'] as const).map(rel => {
+                  const items: any[] = conceptDetail[rel] ?? []
+                  if (!items.length) return null
+                  const labels: Record<string, string> = { upstream: lang === 'zh' ? '前置概念' : 'Upstream', parallel: lang === 'zh' ? '相关概念' : 'Related', downstream: lang === 'zh' ? '延伸概念' : 'Downstream' }
+                  return (
+                    <div key={rel} style={{ marginTop: 16 }}>
+                      <div className="toc-title">{labels[rel]}</div>
+                      {items.map((c: any) => (
+                        <div key={c.id} className="toc-item concept-rel-item" style={{ cursor: 'pointer', color: 'var(--teal)' }}
+                          onClick={() => setSelectedTopic(c.id)}>
+                          {c.name}
+                        </div>
+                      ))}
+                    </div>
+                  )
+                })}
+              </>
             )}
           </div>
         </div>

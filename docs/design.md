@@ -3,11 +3,11 @@
 > **版本历史**
 > | 版本 | 日期 | 变更摘要 |
 > |------|------|---------|
-> | v0.5 | 2026-04-07 | 去除 Supabase，本地 PostgreSQL，导航数据动态化，seed 脚本 |
+> | v0.5 | 2026-04-07 | 本地 PostgreSQL，导航数据动态化，seed 脚本，Qdrant 向量库 |
 > | v0.4 | 2026-03-28 | MDX Content Engine, SharedDocView 统一 Web/OS 渲染 |
 > | v0.3 | 2026-03-26 | AI Knowledge OS v4 架构重构：五层导航、i18n、OS 窗口缩放 |
 > | v0.2 | 2026-03 | AppShell web 模式、Settings 面板、语言切换 |
-> | v0.1 | 2026-03 | 初始版本，OS 桌面、Supabase Auth、双模式切换 |
+> | v0.1 | 2026-03 | 初始版本，OS 桌面、双模式切换 |
 
 ---
 
@@ -87,54 +87,60 @@ SharedDocView.tsx (props: topics + pageLabel)
 > 点进概念后的 Lens 正文内容来自 GitHub 知识库，两者相互独立。
 > 用 `db/seed.py` 新增概念后，正文内容需要同步在 GitHub 知识库中创建对应文件，否则详情页显示"内容未录入"。
 
-### Auth（v0.5 暂时关闭）
+### Auth（暂时关闭）
 
 登录功能已注释，`user` 固定为 `null`：
-- `app/page.tsx`：Supabase 鉴权调用已注释
-- `middleware.ts`：Supabase middleware 已注释，所有请求直接放行
+- `app/page.tsx`：鉴权调用已注释
+- `middleware.ts`：middleware 已注释，所有请求直接放行
 - `AppShell.tsx`：登录/退出 UI 已注释
-
-恢复登录：取消上述三处注释即可。
 
 ## 3. Directory Structure
 
 ```
 .
-├── sql/
-│   └── init.sql              # 表结构 + 初始数据（容器首次启动自动执行）
 ├── db/
-│   ├── seed.py               # 数据管理脚本（list/add/from-json）
-│   ├── seed_example.json     # 批量导入 JSON 示例
-│   └── schema.sql            # 旧版 schema（保留参考）
+│   ├── postgresql/
+│   │   ├── init.sql          # 表结构 + 初始数据（容器首次启动自动执行）
+│   │   ├── schema.sql        # 完整 schema
+│   │   ├── seed.py           # 数据管理脚本（list/add/from-json）
+│   │   └── import.py         # 内容批量导入脚本
+│   ├── qdrant/
+│   │   ├── collections.json  # 集合定义
+│   │   └── init_collections.py
+│   └── seed_example.json     # 批量导入 JSON 示例
 ├── backend/
 │   └── python/
-│       ├── main.py           # FastAPI：导航 API + 概念 API + 原有接口
-│       ├── requirements.txt
+│       ├── main.py           # FastAPI 入口 + 路由注册
+│       ├── db.py             # SQLAlchemy engine
+│       ├── routers/
+│       │   ├── concepts.py   # 导航 / 概念 / 关系图谱
+│       │   └── qdrant_router.py # Qdrant CRUD
 │       └── Dockerfile
 ├── frontend/
 │   ├── app/
-│   │   ├── page.tsx          # Server component，user=null
+│   │   ├── page.tsx
 │   │   ├── globals.css
 │   │   ├── layout.tsx
 │   │   └── api/
-│   │       ├── nav/route.ts      # 代理 /api/nav → Python
-│   │       └── content/route.ts  # MDX 内容加载
+│   │       ├── nav/route.ts          # 代理 → Python /api/nav
+│   │       ├── concept/[slug]/route.ts # 代理 → Python /api/concept/{slug}
+│   │       └── content/route.ts      # MDX 内容加载
 │   ├── components/
-│   │   ├── AppShell.tsx      # Web 模式，动态加载导航
-│   │   ├── SharedDocView.tsx # 内容渲染（Web/OS 共用）
-│   │   ├── Desktop.tsx       # OS 桌面模式
-│   │   └── PageClient.tsx    # AppProvider + 模式路由
+│   │   ├── AppShell.tsx
+│   │   ├── SharedDocView.tsx
+│   │   ├── Desktop.tsx
+│   │   └── PageClient.tsx
 │   ├── content/              # 本地 MDX fallback 内容
 │   └── lib/
 │       ├── appContext.tsx
 │       └── useKeyboardShortcuts.ts
-├── docker-compose.yml        # 生产：postgres + api + frontend
-└── docker-compose.dev.yml    # 开发：同上 + 暴露 5432
+├── docker-compose.yml        # 生产
+└── docker-compose.dev.yml    # 开发
 ```
 
-## 4. Database Schema (v0.5)
+## 4. Database Schema
 
-完整 DDL 见 `sql/init.sql`。
+完整 DDL 见 `db/postgresql/init.sql`。
 
 | 表 | 用途 |
 |---|---|
@@ -169,15 +175,16 @@ SharedDocView.tsx (props: topics + pageLabel)
 
 ## 5. Backend API
 
-所有接口由 `backend/python/main.py` 提供：
+所有接口由 `backend/python/` 提供：
 
 | 接口 | 说明 |
 |---|---|
 | `GET /api/nav` | 完整导航树（分类 + 概念） |
 | `GET /api/concepts` | 概念列表 |
 | `GET /api/concept/{slug}` | 概念详情 + upstream/parallel/downstream |
-| `GET /api/tasks` | 原有任务数据（mock） |
-| `GET /api/profile` | 原有用户数据（mock） |
+| `GET /api/qdrant/collections` | Qdrant 集合列表 |
+| `POST /api/qdrant/{collection}/points` | 新增/更新向量 |
+| `POST /api/qdrant/{collection}/search` | 向量相似搜索 |
 
 数据库连接通过环境变量配置，`POSTGRES_HOST` 未设置时自动降级（不连接 DB）。
 
@@ -185,30 +192,26 @@ SharedDocView.tsx (props: topics + pageLabel)
 
 ### 初始化
 
-postgres 容器首次启动时自动执行 `sql/init.sql`（仅 volume 为空时触发）。
+postgres 容器首次启动时自动执行 `db/postgresql/init.sql`（仅 volume 为空时触发）。
 
 ### 增量更新
 
-使用 `db/seed.py`：
-
 ```bash
-# 列出所有概念
-python3 db/seed.py list
-
-# 交互式添加
-python3 db/seed.py add-concept
-python3 db/seed.py add-category
-
-# 从 JSON 批量导入（推荐）
-python3 db/seed.py from-json db/seed_example.json
+python3 db/postgresql/seed.py list
+python3 db/postgresql/seed.py add-concept
+python3 db/postgresql/seed.py from-json db/seed_example.json
 ```
 
-JSON 格式见 `db/seed_example.json`，建议提交到 git 作为数据版本记录。
+### Qdrant 初始化
+
+```bash
+QDRANT_HOST=localhost python3 db/qdrant/init_collections.py
+```
 
 重置数据库：
 ```bash
-docker-compose -f docker-compose.dev.yml down -v
-docker-compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml down -v
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 ## 7. Styling System
@@ -249,23 +252,19 @@ Dark mode 通过 `[data-theme="dark"]` 覆盖。
 ### Environment Variables
 
 ```env
-# PostgreSQL
 POSTGRES_DB=velamap
 POSTGRES_USER=vela_user
 POSTGRES_PASSWORD=vela_secure_pass
-
-# Frontend → Python 内部通信
 INTERNAL_API_URL=http://api:8000
-
-# 可选（不用 Supabase 时留空）
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+QDRANT_HOST=qdrant
+QDRANT_PORT=6333
 ```
 
 ### 本地启动
 
 ```bash
-docker-compose -f docker-compose.dev.yml up -d --build
+docker compose -f docker-compose.dev.yml up -d --build
 # 前端: http://localhost:3000
-# API:  http://localhost:8000/api/nav
+# API:  http://localhost:8000/docs
+# Qdrant: http://localhost:6333/dashboard
 ```

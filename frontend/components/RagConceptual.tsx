@@ -234,7 +234,7 @@ export default function RagConceptual() {
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <span className="badge" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '6px 12px' }}>Pinecone</span>
               <span className="badge" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '6px 12px' }}>Weaviate</span>
-              <span className="badge" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '6px 12px' }}>Supabase via pgvector</span>
+              <span className="badge" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', padding: '6px 12px' }}>Qdrant</span>
             </div>
           </div>
           
