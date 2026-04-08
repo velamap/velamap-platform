@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useMemo, useEffect, useRef, Fragme
 type Lang = 'zh' | 'en'
 type Theme = 'light' | 'dark'
 type Mode = 'os' | 'web'
-export type LensId = 'conceptual' | 'mechanical' | 'practical' | 'comparative' | 'evolutionary' | 'critical'
+export type LensId = 'conceptual' | 'path' | 'mechanical' | 'practical'
 
 interface AppCtx {
   lang: Lang

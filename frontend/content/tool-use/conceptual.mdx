@@ -1,0 +1,8 @@
+## What It Is
+Tool use is the ability of an LLM to call external functions, APIs, or services to extend its capabilities beyond text generation. Tools allow models to retrieve real-time information, perform calculations, execute code, and interact with external systems. It is the primary mechanism by which LLMs become agents.
+
+## Core Idea
+The LLM is given descriptions of available tools (name, description, input schema) and learns to generate structured tool calls when needed. The tool is executed externally, and its result is returned to the model as additional context. This allows the model to delegate tasks it cannot perform internally (e.g., web search, database queries) to specialized systems.
+
+## Why It Matters
+Tool use transforms LLMs from static knowledge bases into dynamic systems that can access current information and take real-world actions. It is the foundation of function calling in OpenAI, Anthropic, and other APIs. Without tool use, LLMs are limited to knowledge from their training data and cannot interact with live systems.

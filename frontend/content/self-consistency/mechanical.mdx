@@ -1,0 +1,8 @@
+## How It Works
+Sample N reasoning chains from the model using temperature > 0 (e.g., T=0.7) to encourage diversity. Extract the final answer from each chain using a consistent parsing strategy. Return the answer that appears most frequently across the N chains as the final prediction.
+
+## Key Components
+The sampling temperature controls diversity — too low produces similar chains, too high produces incoherent ones. The number of samples N trades off cost against accuracy improvement; N=10–40 is typical. Answer extraction must be robust to handle varied phrasings of the same answer (e.g., "42", "forty-two", "the answer is 42").
+
+## Step by Step
+Generate N completions for the same CoT prompt using temperature sampling. Parse each completion to extract the final answer token or phrase. Aggregate answers by frequency and return the plurality answer as the final output.

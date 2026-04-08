@@ -1,0 +1,8 @@
+## When to Use
+Use CoT prompting for any task requiring multi-step reasoning: math word problems, logical puzzles, code debugging, and complex question answering. It is most effective with larger models (>7B parameters) — smaller models may produce incoherent reasoning chains. Zero-shot CoT is a good first attempt; add few-shot examples if quality is insufficient.
+
+## Common Patterns
+Zero-shot CoT: append "Let's think step by step." to the user's question. Few-shot CoT: include 3–8 worked examples with explicit reasoning chains in the system or user prompt. For structured outputs, instruct the model to reason first and then output a JSON answer.
+
+## Pitfalls
+CoT increases output length and therefore cost and latency. Models can produce plausible-sounding but incorrect reasoning chains ("hallucinated reasoning"). CoT does not help much on tasks that don't require multi-step reasoning — it can even hurt by introducing unnecessary verbosity.

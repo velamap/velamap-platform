@@ -1,0 +1,8 @@
+## How It Works
+The continuous SSM is discretized using a zero-order hold or bilinear method, yielding discrete recurrence: h_t = Āh_{t-1} + B̄u_t, y_t = Ch_t. During training, the recurrence is unrolled into a convolution with a global kernel K = (CB̄, CĀB̄, CĀ²B̄, ...), enabling parallel computation. During inference, the recurrent form is used for O(1) per-step cost.
+
+## Key Components
+The A matrix governs how the hidden state evolves and is often initialized with special structure (e.g., HiPPO matrix) to capture long-range dependencies. The B and C matrices project inputs into and outputs out of the state space. Selective SSMs (Mamba) make B, C, and the step size Δ input-dependent, adding content-awareness.
+
+## Step by Step
+Discretize the continuous A, B matrices using the chosen method and step size Δ. During training, compute the convolution kernel from the discretized parameters and apply it to the input sequence. During inference, maintain the hidden state h_t and update it recurrently for each new token.

@@ -1,0 +1,8 @@
+## When to Use
+Use RoPE as the default positional encoding for any new LLM training — it outperforms learned absolute embeddings and sinusoidal encodings on most benchmarks. It is especially important when long-context capability is a goal. RoPE is compatible with FlashAttention and most modern training frameworks.
+
+## Common Patterns
+Increase the RoPE base (e.g., from 10000 to 500000) to extend the effective context window without fine-tuning. YaRN (Yet another RoPE extensioN) applies non-uniform scaling to different frequency components for better long-context extrapolation. LLaMA 3 uses a base of 500000, enabling 128K context with fine-tuning.
+
+## Pitfalls
+Naive RoPE extrapolation beyond training length degrades quality — use position interpolation or YaRN for reliable long-context extension. The RoPE base must be set before training; changing it later requires continued pre-training. RoPE is not directly applicable to non-attention architectures like SSMs.

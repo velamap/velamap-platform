@@ -1,0 +1,8 @@
+## How It Works
+Attention computes three projections from the input: queries (Q), keys (K), and values (V). The dot product of Q and K produces raw scores, which are scaled and passed through a softmax to yield attention weights. These weights are used to compute a weighted sum of V, producing the output.
+
+## Key Components
+The scaling factor (1/√d_k) prevents dot products from growing too large in high dimensions, which would push softmax into regions with tiny gradients. Queries represent what we're looking for, keys represent what each position offers, and values carry the actual content to be aggregated.
+
+## Step by Step
+First, project input embeddings into Q, K, and V matrices via learned linear layers. Then compute scores as QKᵀ / √d_k, apply softmax row-wise to get attention weights, and finally multiply by V to get the attended output. The result is passed through another linear projection before being used downstream.

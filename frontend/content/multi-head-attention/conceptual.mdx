@@ -1,0 +1,8 @@
+## What It Is
+Multi-head attention runs several attention operations in parallel, each with its own learned projection matrices. Each "head" can focus on different aspects of the input simultaneously. The outputs of all heads are concatenated and projected to produce the final result.
+
+## Core Idea
+A single attention head can only capture one type of relationship at a time. By using multiple heads, the model can jointly attend to information from different representation subspaces at different positions. This gives the model richer expressive power than a single attention operation.
+
+## Why It Matters
+Multi-head attention is the standard form of attention used in all Transformer models. It allows the model to capture diverse linguistic phenomena — syntax, coreference, semantics — in different heads simultaneously. Empirically, different heads specialize in different patterns, contributing to the model's overall capability.

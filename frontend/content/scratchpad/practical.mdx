@@ -1,0 +1,8 @@
+## When to Use
+Use scratchpads for any task where intermediate computation is needed: math, code generation, multi-step planning, and complex reasoning. They are especially useful when you want to hide the reasoning process from end users while still benefiting from it. Modern reasoning models (o1, DeepSeek-R1) use extended scratchpads as a core part of their architecture.
+
+## Common Patterns
+Use `<thinking>` tags to delimit the scratchpad and instruct the model to reason before answering. For API deployments, strip the scratchpad content before returning the response to users. Fine-tune on (problem, scratchpad, answer) triples to teach models to use scratchpads effectively.
+
+## Pitfalls
+Long scratchpads increase token usage and cost significantly. Models can "overthink" in the scratchpad and arrive at worse answers than with direct prompting on simple tasks. Scratchpad content is not always faithful to the model's actual computation — it can be post-hoc rationalization rather than genuine reasoning.

@@ -1,0 +1,8 @@
+## What It Is
+HNSW (Hierarchical Navigable Small World) is a graph-based approximate nearest-neighbor search algorithm. It builds a multi-layer proximity graph where upper layers provide long-range navigation and lower layers provide fine-grained local search. HNSW offers excellent query speed and recall compared to other ANN algorithms.
+
+## Core Idea
+HNSW is inspired by skip lists and small-world network theory. Vectors are inserted into a layered graph where each node connects to its nearest neighbors at each layer. Search starts at the top layer (few nodes, long-range links) and greedily descends to the bottom layer (all nodes, short-range links), efficiently zooming in on the nearest neighbors.
+
+## Why It Matters
+HNSW achieves state-of-the-art recall-speed tradeoffs for approximate nearest-neighbor search. It supports dynamic insertion of new vectors without rebuilding the entire index. It is the default index type in Qdrant, Weaviate, and many other modern vector databases.

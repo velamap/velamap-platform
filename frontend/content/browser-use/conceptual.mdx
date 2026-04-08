@@ -1,0 +1,11 @@
+## What is Browser Use
+
+Browser use refers to the capability of an AI agent to control a web browser programmatically—navigating pages, clicking elements, filling forms, and extracting information—in order to complete tasks that require live web interaction. It extends an agent's reach beyond its training data to the live, dynamic web. This makes it possible to automate research, data collection, and multi-step web workflows.
+
+## Core Ideas
+
+The agent perceives the browser state through a combination of the DOM, screenshots, and accessibility trees, then decides which action to take next. Actions are typically drawn from a discrete set: navigate, click, type, scroll, and extract. The loop of observe → reason → act mirrors the general agent loop but is grounded in the structure of web pages.
+
+## Why It Matters
+
+Many real-world tasks—booking travel, filling out forms, monitoring prices—require interacting with websites that have no API. Browser use unlocks automation for this long tail of web-native workflows. It also enables agents to gather up-to-date information that would otherwise be unavailable inside a static context window.

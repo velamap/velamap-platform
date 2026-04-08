@@ -1,0 +1,8 @@
+## How It Works
+Queries Q are projected from the target sequence (e.g., decoder states), while keys K and values V are projected from the source sequence (e.g., encoder outputs). The attention scores softmax(QKᵀ/√d_k) determine how much each decoder position attends to each encoder position. The output is a weighted combination of encoder values, conditioned on the current decoder state.
+
+## Key Components
+The query projection transforms decoder hidden states into a space compatible with encoder keys. The key and value projections are fixed per encoder output and reused across all decoder steps. This asymmetry — different sources for Q vs. K/V — is what distinguishes cross-attention from self-attention.
+
+## Step by Step
+Compute Q from the decoder's current hidden states and K, V from the encoder's output. Calculate attention scores as QKᵀ/√d_k and apply softmax. Multiply the resulting weights by V to produce a context vector that is concatenated or added to the decoder state.

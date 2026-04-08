@@ -1,0 +1,8 @@
+## What It Is
+Mamba is a selective state space model that extends SSMs with input-dependent (selective) parameters, enabling content-aware sequence processing. It was introduced as a Transformer alternative with linear-time complexity and strong language modeling performance. Mamba selectively compresses information into its state based on the current input, unlike fixed-parameter SSMs.
+
+## Core Idea
+Standard SSMs use fixed A, B, C matrices regardless of input content, limiting their ability to selectively remember or forget information. Mamba makes the B, C matrices and the step size Δ functions of the input, allowing the model to decide what to store in its state dynamically. This selectivity is the key innovation that brings SSM performance close to Transformers on language tasks.
+
+## Why It Matters
+Mamba achieves Transformer-quality language modeling with O(n) time and O(1) inference memory per step. It processes sequences of millions of tokens that would be impossible with standard attention. Mamba has sparked significant interest in non-attention architectures and hybrid models.

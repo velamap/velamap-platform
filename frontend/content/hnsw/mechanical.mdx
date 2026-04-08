@@ -1,0 +1,8 @@
+## How It Works
+During construction, each new vector is assigned a random maximum layer level drawn from an exponential distribution. The vector is inserted by finding its nearest neighbors at each layer from the top down and adding bidirectional edges. The number of connections per node (M) and the construction beam width (efConstruction) control graph quality.
+
+## Key Components
+The entry point is a single node at the top layer, providing a global starting point for all queries. The M parameter controls the number of edges per node — higher M improves recall but increases memory and construction time. The ef parameter at query time controls the beam search width, trading speed for recall.
+
+## Step by Step
+Start search from the entry point at the top layer and greedily move to the nearest neighbor. Descend to the next layer and repeat the greedy search, using the result as the new entry point. At the bottom layer, perform a beam search with width ef to find the top-k nearest neighbors.

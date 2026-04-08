@@ -1,0 +1,11 @@
+## How It Works
+
+Alignment techniques intervene at different stages of the model lifecycle. During training, methods like RLHF use human feedback to shape reward signals so the model learns to produce outputs humans prefer. Constitutional AI and debate-based approaches add self-critique or adversarial evaluation loops to surface misaligned behavior before deployment.
+
+## Key Components
+
+A reward model is trained on human preference data and acts as a proxy for human judgment during reinforcement learning. Red-teaming pipelines systematically probe the model for harmful or misaligned outputs. Evaluation benchmarks such as TruthfulQA and HarmBench measure specific alignment properties like honesty and refusal of harmful requests.
+
+## Process Flow
+
+Human raters compare model outputs and their preferences are used to train a reward model. The language model is then fine-tuned with PPO or a similar RL algorithm to maximize the reward signal. Iterative rounds of evaluation and fine-tuning progressively steer the model toward aligned behavior.

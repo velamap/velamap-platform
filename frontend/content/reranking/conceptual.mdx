@@ -1,0 +1,8 @@
+## What It Is
+Reranking is a second-stage retrieval step that re-scores an initial set of candidate documents using a more powerful but slower model. It takes the top-k results from a fast first-stage retriever and reorders them by relevance. Cross-encoder rerankers typically outperform bi-encoder retrievers in accuracy at the cost of higher latency.
+
+## Core Idea
+First-stage retrieval (BM25 or dense) is fast but approximate. A cross-encoder reranker jointly encodes the query and each candidate document together, allowing full attention between them for more accurate relevance scoring. The reranker only processes a small candidate set (e.g., top 100), making it feasible despite its higher per-pair cost.
+
+## Why It Matters
+Reranking significantly improves precision at the top of the ranked list, which is what matters most for RAG and search. It allows using a cheap first-stage retriever to filter the corpus and an expensive reranker to refine the results. The combination achieves near cross-encoder quality at near bi-encoder speed.

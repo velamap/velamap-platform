@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { ChevronRight, Clock, BarChart2, CheckCircle, Circle, Lock } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { ChevronRight, Clock, BarChart2, CheckCircle, Zap } from 'lucide-react'
 import ConceptGraph from './ConceptGraph'
+import AutoPathPanel from './AutoPathPanel'
 import { useApp } from '@/lib/appContext'
 
 interface PathNode {
@@ -27,6 +28,15 @@ interface Path {
   nodes: PathNode[]
 }
 
+interface AutoPathNode {
+  slug: string
+  zh_name: string
+  en_name: string
+  difficulty: number
+  importance: number
+  step_order: number
+}
+
 interface Props {
   onConceptClick: (slug: string) => void
 }
@@ -37,6 +47,10 @@ export default function PathView({ onConceptClick }: Props) {
   const [activePath, setActivePath] = useState<Path | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [showGraph, setShowGraph] = useState(false)
+  // Auto Path 模式
+  const [mode, setMode] = useState<'manual' | 'auto'>('manual')
+  const [autoPathNodes, setAutoPathNodes] = useState<AutoPathNode[]>([])
+  const [autoCurrentStep, setAutoCurrentStep] = useState(0)
 
   useEffect(() => {
     fetch('/api/paths')
@@ -57,54 +71,111 @@ export default function PathView({ onConceptClick }: Props) {
   if (!activePath) {
     return (
       <div style={{ padding: '24px' }}>
-        <h2 style={{ fontSize: 18, fontWeight: 600, color: 'var(--ink)', marginBottom: 16 }}>
-          {lang === 'zh' ? '学习路径' : 'Learning Paths'}
-        </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {paths.map(p => (
-            <div
-              key={p.slug}
-              onClick={() => loadPath(p.slug)}
-              style={{
-                padding: '16px 20px', borderRadius: 12, cursor: 'pointer',
-                background: 'var(--card)', border: '1px solid var(--border)',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--teal)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
-            >
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink)', marginBottom: 4 }}>
-                  {lang === 'zh' ? p.zh_name : p.en_name}
-                </div>
-                {p.description && (
-                  <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{p.description}</div>
-                )}
-                <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--muted)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Clock size={11} /> {p.duration}min
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <BarChart2 size={11} /> {difficultyLabel(p.difficulty)}
-                  </span>
-                  <span style={{
-                    padding: '2px 8px', borderRadius: 20, fontSize: 10,
-                    background: 'var(--teal-light)', color: 'var(--teal)',
-                  }}>
-                    {p.path_type}
-                  </span>
-                </div>
-              </div>
-              <ChevronRight size={16} color="var(--muted)" />
-            </div>
-          ))}
-          {paths.length === 0 && (
-            <p style={{ color: 'var(--muted)', fontSize: 13 }}>
-              {lang === 'zh' ? '暂无路径数据' : 'No paths available'}
-            </p>
-          )}
+        {/* Mode toggle */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          <button
+            onClick={() => setMode('manual')}
+            style={{
+              padding: '6px 16px', borderRadius: 20, fontSize: 13, cursor: 'pointer',
+              border: `1px solid ${mode === 'manual' ? 'var(--teal)' : 'var(--border)'}`,
+              background: mode === 'manual' ? 'var(--teal-light)' : 'none',
+              color: mode === 'manual' ? 'var(--teal)' : 'var(--muted)',
+              fontWeight: mode === 'manual' ? 600 : 400,
+            }}
+          >
+            {lang === 'zh' ? '精选路径' : 'Curated'}
+          </button>
+          <button
+            onClick={() => setMode('auto')}
+            style={{
+              padding: '6px 16px', borderRadius: 20, fontSize: 13, cursor: 'pointer',
+              border: `1px solid ${mode === 'auto' ? '#165DFF' : 'var(--border)'}`,
+              background: mode === 'auto' ? 'rgba(22,93,255,0.08)' : 'none',
+              color: mode === 'auto' ? '#165DFF' : 'var(--muted)',
+              fontWeight: mode === 'auto' ? 600 : 400,
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}
+          >
+            <Zap size={12} /> {lang === 'zh' ? '自动生成' : 'Auto Engine'}
+          </button>
         </div>
+
+        {/* Auto Path mode */}
+        {mode === 'auto' && (
+          <>
+            <AutoPathPanel
+              onConceptClick={onConceptClick}
+              onPathGenerated={(nodes, step) => {
+                setAutoPathNodes(nodes)
+                setAutoCurrentStep(step)
+              }}
+            />
+            {autoPathNodes.length > 0 && (
+              <div style={{ marginTop: 16 }}>
+                <ConceptGraph
+                  conceptDetail={null}
+                  onNodeClick={slug => {
+                    const idx = autoPathNodes.findIndex(n => n.slug === slug)
+                    if (idx >= 0) setAutoCurrentStep(idx)
+                  }}
+                  lang={lang as 'zh' | 'en'}
+                  pathMode
+                  pathNodes={autoPathNodes.map(n => ({ ...n, is_key: false }))}
+                  currentStep={autoCurrentStep}
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Manual / curated paths */}
+        {mode === 'manual' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {paths.map(p => (
+              <div
+                key={p.slug}
+                onClick={() => loadPath(p.slug)}
+                style={{
+                  padding: '16px 20px', borderRadius: 12, cursor: 'pointer',
+                  background: 'var(--card)', border: '1px solid var(--border)',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--teal)')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--border)')}
+              >
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--ink)', marginBottom: 4 }}>
+                    {lang === 'zh' ? p.zh_name : p.en_name}
+                  </div>
+                  {p.description && (
+                    <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{p.description}</div>
+                  )}
+                  <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--muted)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Clock size={11} /> {p.duration}min
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <BarChart2 size={11} /> {difficultyLabel(p.difficulty)}
+                    </span>
+                    <span style={{
+                      padding: '2px 8px', borderRadius: 20, fontSize: 10,
+                      background: 'var(--teal-light)', color: 'var(--teal)',
+                    }}>
+                      {p.path_type}
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight size={16} color="var(--muted)" />
+              </div>
+            ))}
+            {paths.length === 0 && (
+              <p style={{ color: 'var(--muted)', fontSize: 13 }}>
+                {lang === 'zh' ? '暂无路径数据' : 'No paths available'}
+              </p>
+            )}
+          </div>
+        )}
       </div>
     )
   }

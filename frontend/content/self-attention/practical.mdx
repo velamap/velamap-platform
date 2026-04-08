@@ -1,0 +1,8 @@
+## When to Use
+Self-attention is the default sequence modeling layer in any Transformer-based architecture. Use it when you need to model relationships between all positions in a sequence simultaneously. It is appropriate for both encoding (bidirectional) and decoding (causal/unidirectional) tasks.
+
+## Common Patterns
+Bidirectional self-attention (BERT-style) is used for understanding tasks where the full context is available. Causal self-attention (GPT-style) is used for generation tasks where future tokens must not be seen. Combining both in an encoder-decoder setup handles tasks like translation and summarization.
+
+## Pitfalls
+Self-attention scales quadratically with sequence length, becoming a bottleneck for long documents. Without positional encodings, the model is order-agnostic and cannot distinguish token positions. Very deep self-attention stacks can suffer from rank collapse, where all token representations converge to similar vectors.

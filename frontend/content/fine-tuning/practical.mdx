@@ -1,0 +1,33 @@
+## 微调实践指南
+
+## 选择微调方式
+
+根据资源和需求选择合适的方法：
+
+- **LoRA**：推荐首选，显存占用低，效果接近全量微调
+- **QLoRA**：在 LoRA 基础上加量化，可在消费级 GPU 上微调 7B+ 模型
+- **全量微调**：数据量大、资源充足时使用
+
+## 数据格式
+
+主流框架（LLaMA-Factory、Axolotl）使用 Alpaca 或 ShareGPT 格式：
+
+```json
+{
+  "instruction": "解释什么是向量数据库",
+  "input": "",
+  "output": "向量数据库是专门存储和检索高维向量的数据库..."
+}
+```
+
+## 常见问题
+
+- **灾难性遗忘**：学习率过大或数据分布偏差导致，降低学习率或混入通用数据
+- **过拟合**：训练轮次过多，增加验证集监控并提前停止
+- **输出格式不稳定**：在数据中加入更多格式示例，或使用 RLHF 对齐
+
+## 推荐工具
+
+- [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)：支持主流模型，配置简单
+- [Axolotl](https://github.com/OpenAccess-AI-Collective/axolotl)：灵活，适合研究
+- [Unsloth](https://github.com/unslothai/unsloth)：速度快，显存优化好

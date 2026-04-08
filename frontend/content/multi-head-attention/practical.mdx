@@ -1,0 +1,8 @@
+## When to Use
+Multi-head attention is the default choice for any Transformer layer — use it unless you have a specific reason to reduce head count. More heads generally improve quality up to a point, after which returns diminish. Grouped-query attention (GQA) and multi-query attention (MQA) are efficient variants worth considering for inference-heavy deployments.
+
+## Common Patterns
+Standard Transformers use 8–96 heads depending on model size, with head dimension typically fixed at 64. Grouped-query attention shares K/V heads across multiple Q heads to reduce KV cache memory. Attention head pruning can remove redundant heads after training to speed up inference.
+
+## Pitfalls
+Too many heads with too small a head dimension can hurt performance, as each head has insufficient capacity. All heads can collapse to similar patterns if not regularized, wasting capacity. At inference time, the KV cache grows linearly with the number of heads, making memory a bottleneck for large models.

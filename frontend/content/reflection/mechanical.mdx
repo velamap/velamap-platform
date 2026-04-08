@@ -1,0 +1,8 @@
+## How It Works
+The model first generates an initial response to the task. A reflection prompt then asks the model to critique its own response: "Review your answer above. Identify any errors or areas for improvement." The model generates a critique, then produces a revised response incorporating the identified improvements.
+
+## Key Components
+The reflection prompt is critical — it should ask for specific types of errors relevant to the task (logical errors, factual mistakes, missing steps). Multiple rounds of reflection can be applied, though diminishing returns set in quickly. External feedback (e.g., code execution results, test failures) can replace or augment self-reflection for grounded tasks.
+
+## Step by Step
+Generate an initial response to the task. Prompt the model to critique the response, identifying specific issues. Generate a revised response that addresses the identified issues, and optionally repeat for additional rounds.

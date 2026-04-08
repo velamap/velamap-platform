@@ -1,0 +1,11 @@
+## How It Works
+
+Each token in the context is represented as a vector, and self-attention computes pairwise relationships between all tokens in the window. The KV cache stores key and value projections for previously processed tokens, allowing efficient incremental generation without recomputing the full attention matrix on each step. Positional encodings (absolute or rotary) give the model information about where each token sits in the sequence.
+
+## Key Components
+
+The maximum sequence length is set at training time and determines the positional encoding range the model has learned. KV cache memory grows linearly with sequence length and batch size, making long contexts memory-intensive. Techniques like sliding window attention, sparse attention, and RoPE scaling extend effective context length beyond the training maximum.
+
+## Process Flow
+
+At inference time, the full prompt is tokenized and fed into the model in a single prefill pass, populating the KV cache. The model then generates tokens one at a time, attending over the entire cached context. When the sequence approaches the maximum length, older tokens must be evicted or the generation must stop.

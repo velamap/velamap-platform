@@ -1,0 +1,8 @@
+## What It Is
+Chunking is the process of splitting documents into smaller pieces before indexing them for retrieval. Since LLMs and embedding models have limited context windows, documents must be divided into manageable units. The chunking strategy significantly affects retrieval quality and downstream generation.
+
+## Core Idea
+Each chunk should be semantically coherent — containing enough context to be useful on its own, but small enough to be precisely retrieved. Chunks that are too large dilute relevance signals; chunks that are too small lose necessary context. The right chunk size depends on the embedding model, the LLM context window, and the nature of the content.
+
+## Why It Matters
+Poor chunking is one of the most common causes of RAG failure. If relevant information is split across chunk boundaries, it may never be retrieved together. Good chunking preserves semantic units (paragraphs, sections) and ensures each chunk is independently meaningful.

@@ -1,0 +1,8 @@
+## What It Is
+Positional encoding injects information about the order of tokens into a Transformer, which is otherwise permutation-invariant. Since attention has no built-in notion of sequence order, positional encodings are added to (or incorporated into) token embeddings to give the model positional awareness. They can be fixed (sinusoidal) or learned.
+
+## Core Idea
+Each position in the sequence is assigned a unique vector that is added to the token embedding before processing. The model can then use these positional signals to distinguish tokens at different positions. Good positional encodings also generalize to sequence lengths not seen during training.
+
+## Why It Matters
+Without positional encoding, a Transformer treats "the cat sat on the mat" and "the mat sat on the cat" identically. Positional information is essential for tasks like translation, where word order carries meaning. The choice of positional encoding also affects how well a model generalizes to longer sequences at inference time.

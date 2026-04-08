@@ -1,0 +1,8 @@
+## What It Is
+A scratchpad is a designated space in the model's context where it can write intermediate computations, notes, and reasoning before producing a final answer. It is the textual equivalent of working memory, allowing the model to externalize its thinking process. Scratchpads are used in both prompting techniques and fine-tuned models.
+
+## Core Idea
+LLMs are limited by their ability to perform complex computations "in their head" in a single forward pass. By writing intermediate steps to a scratchpad, the model can break complex tasks into smaller steps, each of which is within its capabilities. The scratchpad content becomes part of the context, allowing the model to refer back to earlier computations.
+
+## Why It Matters
+Scratchpads significantly improve performance on tasks requiring multi-step computation, such as arithmetic, symbolic reasoning, and code generation. They are the mechanism underlying chain-of-thought prompting. Fine-tuning models to use scratchpads (as in the original "Show Your Work" paper) can teach smaller models to solve problems that would otherwise require much larger models.

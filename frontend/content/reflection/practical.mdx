@@ -1,0 +1,8 @@
+## When to Use
+Use reflection for tasks where quality matters more than speed: code generation, technical writing, complex analysis, and multi-step planning. It is especially valuable in agentic loops where the model can observe the results of its actions and reflect on failures. One round of reflection is usually sufficient; more rounds have diminishing returns.
+
+## Common Patterns
+For code generation: generate code, run it, feed errors back as reflection input. For writing: generate a draft, ask for a critique, then generate a revised version. In agent frameworks like Reflexion, reflection is formalized as a memory of past failures used to guide future attempts.
+
+## Pitfalls
+Self-reflection can be sycophantic — the model may validate its own incorrect output rather than genuinely critiquing it. Reflection increases latency and cost proportionally to the number of rounds. Without grounding (e.g., code execution), the model may "fix" correct outputs or introduce new errors.

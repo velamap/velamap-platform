@@ -1,0 +1,8 @@
+## When to Use
+Consider SSMs for tasks with very long sequences (>16K tokens) where attention's quadratic cost is prohibitive. They are particularly strong on time-series, audio, and genomics tasks with long-range dependencies. SSMs are also attractive for edge deployment due to their constant-memory recurrent inference.
+
+## Common Patterns
+S4 and its variants are used for long-range sequence classification benchmarks. Mamba combines SSMs with selective gating for language modeling competitive with Transformers. Hybrid architectures (e.g., Jamba) interleave SSM and attention layers to get benefits of both.
+
+## Pitfalls
+SSMs can struggle with tasks requiring precise in-context retrieval, where attention excels. The HiPPO initialization and discretization details significantly affect performance and are non-trivial to implement correctly. Training stability can be sensitive to the parameterization of the A matrix.

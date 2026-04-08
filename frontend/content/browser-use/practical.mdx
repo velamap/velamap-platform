@@ -1,0 +1,11 @@
+## When to Use
+
+Browser use is appropriate when a task requires interacting with a website that exposes no API, when data must be gathered from live pages, or when a workflow involves multiple authenticated web sessions. It is well-suited for research automation, competitive monitoring, and form-based data entry at scale.
+
+## Implementation
+
+Use a framework like Playwright with a vision-capable model to handle both text-heavy and visually complex pages. Serialize the accessibility tree rather than raw HTML to reduce token usage while preserving interactive element metadata. Implement retry logic and error recovery since web pages are dynamic and actions can fail due to loading delays or layout changes.
+
+## Best Practices
+
+Scope browser sessions tightly and avoid storing sensitive credentials in the agent's context. Prefer accessibility-tree observations over full-page screenshots when possible to reduce latency and cost. Add human-in-the-loop checkpoints for irreversible actions such as form submissions or purchases.

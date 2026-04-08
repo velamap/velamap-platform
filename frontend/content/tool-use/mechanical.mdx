@@ -1,0 +1,8 @@
+## How It Works
+Tool definitions are provided to the model as structured schemas (JSON Schema) describing each tool's name, description, and parameters. The model generates a tool call as a structured output (JSON) specifying the tool name and arguments. The calling application executes the tool and returns the result, which is appended to the conversation as a tool result message.
+
+## Key Components
+The tool schema (name, description, parameters) is critical — clear descriptions help the model choose the right tool and provide correct arguments. The model's tool-calling capability is typically fine-tuned, not just prompted. The application layer is responsible for routing tool calls to the correct implementations and handling errors.
+
+## Step by Step
+Define tools as JSON schemas and include them in the API request. The model generates a response that either answers directly or includes a tool call. Execute the tool call, format the result as a tool message, and send it back to the model for the next turn.

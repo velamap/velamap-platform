@@ -1,0 +1,8 @@
+## What It Is
+Self-attention is a variant of attention where a sequence attends to itself — queries, keys, and values all come from the same input. Each token can directly look at every other token in the same sequence. It is the core operation inside every Transformer encoder and decoder layer.
+
+## Core Idea
+By allowing each position to attend to all other positions, self-attention captures both local and global dependencies in a single operation. The model learns which tokens are relevant to each other regardless of their distance. This replaces recurrence and convolution as the primary way to model sequence context.
+
+## Why It Matters
+Self-attention enables parallelizable training over entire sequences, unlike RNNs which process tokens sequentially. It gives every token direct access to every other token, solving the vanishing gradient problem for long-range dependencies. This property is what makes Transformers scale so effectively with data and compute.

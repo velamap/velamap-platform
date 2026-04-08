@@ -1,0 +1,11 @@
+## What is a Code Interpreter
+
+A code interpreter is a tool that allows an AI model to write and execute code within a sandboxed environment, observe the output, and use the results to continue reasoning. Rather than generating code as a static artifact, the model uses code execution as a dynamic reasoning step. This transforms the model from a text predictor into an active computational agent.
+
+## Core Ideas
+
+The key insight is that many tasks—data analysis, math, visualization—are better solved by writing and running code than by reasoning in natural language alone. The model generates a code snippet, executes it, reads the stdout or error output, and decides what to do next. This tight feedback loop allows the model to self-correct and handle tasks that require precise computation.
+
+## Why It Matters
+
+Code interpreters dramatically expand what AI assistants can reliably accomplish. Tasks that would require error-prone multi-step arithmetic or complex data manipulation in natural language become straightforward when delegated to a Python runtime. They also enable the model to produce charts, process files, and interact with data in ways that pure text generation cannot.

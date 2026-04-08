@@ -1,0 +1,11 @@
+## When to Use
+
+Document QA is appropriate for any application where users need to query a fixed or slowly changing document corpus: legal contract review, technical documentation search, financial report analysis, and internal knowledge bases. It is preferable to fine-tuning when the document set changes frequently or when source attribution is required.
+
+## Implementation
+
+Use a hybrid retriever combining BM25 and dense embeddings to maximize recall across both keyword-heavy and semantic queries. Chunk documents at natural boundaries (paragraphs, sections) and include metadata like document title and page number in each chunk. Instruct the reader model to answer only from the provided context and to say "not found" when the answer is absent.
+
+## Best Practices
+
+Evaluate retrieval recall separately from answer quality—poor retrieval is the most common failure mode. Re-rank retrieved chunks with a cross-encoder before passing them to the reader to improve precision. Include source citations in the model's output and surface them in the UI so users can verify answers against the original document.

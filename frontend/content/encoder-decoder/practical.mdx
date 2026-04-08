@@ -1,0 +1,8 @@
+## When to Use
+Use encoder-decoder models for tasks with a clear input-to-output transformation: translation, summarization, data-to-text, and structured prediction. They are preferable when the output length is much shorter than the input (e.g., summarization) or when bidirectional input encoding is important. For open-ended generation, decoder-only models are now more common.
+
+## Common Patterns
+T5 frames all NLP tasks as text-to-text, using a single encoder-decoder model for classification, QA, and generation. BART pre-trains by corrupting text and learning to reconstruct it, making it strong for summarization. Whisper uses an encoder-decoder architecture for speech recognition, with the encoder processing audio and the decoder generating transcripts.
+
+## Pitfalls
+Encoder-decoder models have roughly 2× the parameters of a decoder-only model for the same capacity, increasing training cost. Cross-attention adds latency at each decoder step. Modern decoder-only LLMs with long context can often match encoder-decoder quality on summarization and translation, reducing the architectural advantage.

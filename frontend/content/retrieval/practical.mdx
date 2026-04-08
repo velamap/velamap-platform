@@ -1,0 +1,8 @@
+## When to Use
+Use retrieval whenever your LLM application needs access to knowledge beyond the model's training data or context window. It is essential for enterprise knowledge bases, customer support, and any domain with frequently updated information. Retrieval is also useful for reducing hallucination on factual questions.
+
+## Common Patterns
+BM25 retrieval is a strong baseline for keyword-heavy queries. Dense retrieval with bi-encoders (e.g., sentence-transformers) handles semantic queries better. Hybrid retrieval combining both with RRF (Reciprocal Rank Fusion) typically outperforms either alone.
+
+## Pitfalls
+Retrieval quality is the ceiling for RAG quality — a bad retriever cannot be compensated by a good LLM. Chunk size and overlap significantly affect what gets retrieved; too small loses context, too large dilutes relevance. Retrieval latency adds to end-to-end response time and must be optimized for production.

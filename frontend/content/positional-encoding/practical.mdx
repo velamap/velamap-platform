@@ -1,0 +1,8 @@
+## When to Use
+Always include positional encoding in Transformer models unless you are using an architecture that builds position in differently (e.g., RoPE applied inside attention). For tasks requiring length generalization beyond training, prefer relative encodings like RoPE or ALiBi over absolute learned embeddings. Sinusoidal encodings are a safe default when simplicity is preferred.
+
+## Common Patterns
+BERT and GPT-2 use learned absolute positional embeddings up to a fixed max length. T5 uses relative position biases added to attention logits. Modern LLMs (LLaMA, Mistral) use RoPE, which has become the de facto standard for its strong length generalization properties.
+
+## Pitfalls
+Learned absolute embeddings cannot generalize to sequences longer than the training maximum without fine-tuning or interpolation. Sinusoidal encodings generalize better but may underperform learned embeddings on short sequences. Positional encoding choice is tightly coupled to the attention mechanism — switching encodings often requires retraining.

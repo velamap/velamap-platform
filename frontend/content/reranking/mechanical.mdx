@@ -1,0 +1,8 @@
+## How It Works
+A cross-encoder takes a (query, document) pair as input, concatenated with a separator token, and outputs a single relevance score. The model applies full bidirectional attention over both query and document jointly, enabling fine-grained interaction. The scores are used to reorder the candidate set, and the top-k reranked results are passed to the LLM.
+
+## Key Components
+Cross-encoders are typically fine-tuned BERT or similar models trained on query-document relevance pairs (e.g., MS MARCO). The scoring head is a linear layer on top of the [CLS] token representation. LLM-based rerankers (e.g., using GPT-4 to score relevance) offer higher quality but much higher cost.
+
+## Step by Step
+Retrieve top-N candidates (e.g., N=100) using a fast first-stage retriever. For each candidate, concatenate the query and document and pass through the cross-encoder to get a relevance score. Sort candidates by score and return the top-k for use as LLM context.

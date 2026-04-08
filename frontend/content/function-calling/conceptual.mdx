@@ -1,0 +1,8 @@
+## What It Is
+Function calling is a model capability that allows LLMs to generate structured JSON outputs representing calls to predefined functions. It is the standardized API-level interface for tool use, supported natively by OpenAI, Anthropic, Google, and most major LLM providers. Function calling enables reliable, parseable tool invocation without prompt engineering hacks.
+
+## Core Idea
+Instead of asking the model to format tool calls as free text (which is fragile), function calling fine-tunes the model to output valid JSON conforming to a provided schema. The model decides when to call a function, which function to call, and what arguments to provide. The application then executes the function and returns the result.
+
+## Why It Matters
+Function calling makes tool use reliable and production-ready by eliminating the need to parse free-text tool calls. It enables parallel function calling (multiple tools in one response) and structured data extraction. It is the standard interface for building agentic applications with major LLM APIs.

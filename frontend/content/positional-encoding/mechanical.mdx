@@ -1,0 +1,8 @@
+## How It Works
+The original Transformer uses sinusoidal encodings: PE(pos, 2i) = sin(pos/10000^(2i/d)) and PE(pos, 2i+1) = cos(pos/10000^(2i/d)). These fixed vectors are added element-wise to token embeddings before the first layer. Learned positional embeddings (used in BERT, GPT) instead train a lookup table of position vectors end-to-end.
+
+## Key Components
+Sinusoidal encodings have the property that relative positions can be expressed as linear functions of the encoding, aiding generalization. Learned embeddings are more flexible but limited to the maximum sequence length seen during training. Relative positional encodings (T5, RoPE, ALiBi) encode position differences rather than absolute positions, improving length generalization.
+
+## Step by Step
+For each token at position p, retrieve or compute its positional vector. Add this vector to the token's embedding to produce a position-aware representation. Pass the combined embeddings into the first Transformer layer; no further positional injection is needed in absolute encoding schemes.

@@ -1,0 +1,11 @@
+## When to Use
+
+Long context windows are valuable when the task requires reasoning over large documents, maintaining extended conversation history, or processing multiple retrieved chunks simultaneously. They reduce the need for complex chunking and retrieval pipelines when the entire relevant content fits within the window.
+
+## Implementation
+
+Measure token counts before sending requests to avoid truncation errors; use the model's tokenizer rather than word counts. Place the most important information at the beginning or end of the context, as models tend to attend less reliably to the middle of very long sequences (the "lost in the middle" problem). Use streaming to return partial results for long-context requests with high latency.
+
+## Best Practices
+
+Don't fill the context window unnecessarily—shorter, focused prompts are faster and cheaper. Monitor KV cache memory usage in production, as long contexts can exhaust GPU memory and reduce batch sizes. For tasks that exceed the context window, combine retrieval-augmented generation with summarization to stay within limits while preserving key information.

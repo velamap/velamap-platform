@@ -1,0 +1,8 @@
+## How It Works
+Mamba's selective SSM computes B_t = Linear_B(u_t), C_t = Linear_C(u_t), and Δ_t = softplus(Linear_Δ(u_t)) from the input u_t at each step. These are used to discretize A and B per timestep, making the recurrence input-dependent. A hardware-aware parallel scan algorithm enables efficient training despite the time-varying parameters.
+
+## Key Components
+The selective scan is the core operation, replacing the fixed convolution of standard SSMs with a time-varying recurrence. The parallel scan algorithm computes the recurrence in O(n log n) time on GPU using associative scan operations. Mamba also uses a gated MLP structure around the SSM, similar to gated linear units.
+
+## Step by Step
+Project the input into multiple streams: one for the SSM path and one for a gating path. Compute input-dependent B, C, Δ and run the selective scan to produce the SSM output. Multiply by the gating signal and project back to the model dimension.

@@ -1,0 +1,8 @@
+## When to Use
+Use function calling whenever you need reliable, structured tool invocation from an LLM. It is the preferred approach over free-text tool use for production systems. Use it for data extraction (extracting structured data from text), API integration, and any agentic workflow requiring tool use.
+
+## Common Patterns
+Keep function descriptions concise but specific — the model uses them to decide when to call. Use `required` fields in the JSON Schema to ensure critical parameters are always provided. For data extraction, define a single function with the desired output schema and set `tool_choice` to force the model to call it.
+
+## Pitfalls
+Models can hallucinate argument values, especially for parameters not mentioned in the user's message — validate all inputs. Function schemas that are too complex or have too many optional parameters confuse the model. Not all models support parallel function calling — check provider documentation before relying on it.

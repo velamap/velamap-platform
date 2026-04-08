@@ -1,0 +1,8 @@
+## When to Use
+Use cross-attention whenever you need to condition one sequence's generation on another sequence, such as in translation, summarization, or image captioning. It is also the standard way to inject conditioning signals (e.g., text prompts) into diffusion models. Any task with two distinct input streams that need to interact benefits from cross-attention.
+
+## Common Patterns
+In T5 and BART, every decoder layer has a cross-attention sublayer that attends to the full encoder output. In Stable Diffusion, cross-attention layers inject CLIP text embeddings into the UNet at multiple resolutions. In retrieval-augmented generation, cross-attention can fuse retrieved document representations with the query.
+
+## Pitfalls
+Cross-attention adds significant compute when the source sequence is long, since every decoder step attends over all encoder positions. Caching encoder key/value projections is essential for efficient inference. Misaligned sequence lengths between source and target can lead to poor attention patterns if not handled carefully.

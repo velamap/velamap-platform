@@ -1,0 +1,11 @@
+## How It Works
+
+The teacher model generates soft probability distributions over the vocabulary for each training example. The student model is trained to minimize a combination of the cross-entropy loss against ground-truth labels and the KL divergence between its output distribution and the teacher's. A temperature hyperparameter T scales the logits before softmax to control the softness of the targets.
+
+## Key Components
+
+The distillation loss is a weighted sum of the task loss (hard labels) and the imitation loss (soft targets from the teacher). Intermediate layer distillation can also align hidden states or attention patterns between teacher and student, providing richer supervision signals. The temperature T is typically set between 2 and 10 during distillation and reset to 1 at inference time.
+
+## Process Flow
+
+First, the teacher model is trained or loaded. The teacher then performs a forward pass on the training data to generate soft labels. The student is trained on these soft labels alongside the original hard labels, with the distillation loss guiding it to internalize the teacher's knowledge. The student is evaluated independently after training.

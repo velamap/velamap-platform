@@ -1,0 +1,11 @@
+## What is a Context Window
+
+The context window is the maximum number of tokens a language model can process in a single forward pass, encompassing both the input prompt and the generated output. Everything the model "knows" during inference must fit within this fixed-size window. Tokens outside the window are invisible to the model and cannot influence its responses.
+
+## Core Ideas
+
+Transformer models use self-attention, which scales quadratically with sequence length, making very long contexts computationally expensive. The context window defines the model's working memory: it holds the conversation history, retrieved documents, tool outputs, and any other information the model needs. Longer context windows enable more complex, multi-turn, and document-heavy tasks.
+
+## Why It Matters
+
+Context length is a fundamental constraint that shapes what applications are possible. A short context window forces developers to summarize or truncate information, potentially losing critical details. Advances in long-context models (from 4K to 1M+ tokens) have unlocked new use cases like full-codebase analysis, book-length document Q&A, and extended agentic sessions.

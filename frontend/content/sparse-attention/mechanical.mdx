@@ -1,0 +1,8 @@
+## How It Works
+Instead of computing the full N×N attention matrix, sparse attention only computes scores for a predefined set of (query, key) pairs. Common patterns include sliding window (each token attends to its k nearest neighbors), dilated windows (strided access for longer range), and global tokens (a few tokens attend to everything). The sparse score matrix is then used in the same softmax-weighted sum as standard attention.
+
+## Key Components
+Local window attention captures short-range dependencies efficiently. Global tokens (e.g., [CLS]) allow information to propagate across the full sequence. Combining local, strided, and global patterns (as in Longformer) provides both local context and long-range connectivity at O(n) cost.
+
+## Step by Step
+Define the sparsity pattern (which positions each query attends to). Compute attention scores only for the allowed (q, k) pairs using sparse matrix operations or blocked kernels. Apply softmax over the allowed keys for each query and compute the weighted sum of corresponding values.

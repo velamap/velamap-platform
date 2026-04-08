@@ -1,0 +1,8 @@
+## When to Use
+Use ToT for tasks that require exploration and backtracking: mathematical puzzles, code planning, multi-step reasoning with constraints, and creative tasks with specific requirements. It is overkill for simple tasks where CoT suffices. ToT is most valuable when the problem has a clear success criterion that can be evaluated.
+
+## Common Patterns
+Use the LLM itself as the evaluator with a prompt like "Is this partial solution on track to solve the problem? Rate: sure/likely/impossible." Limit the tree depth and branching factor to control cost. For code generation, use test execution as the evaluation signal rather than LLM self-evaluation.
+
+## Pitfalls
+ToT is expensive — it requires many LLM calls per problem (k thoughts × search depth). The quality of the value function is critical; a poor evaluator leads to wasted search. ToT adds significant implementation complexity compared to simple CoT prompting.

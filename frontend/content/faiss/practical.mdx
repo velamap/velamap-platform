@@ -1,0 +1,8 @@
+## When to Use
+Use FAISS when you need fast similarity search over large collections of dense embeddings (>100K vectors). It is the standard choice for offline batch retrieval and is well-suited for RAG pipelines, semantic search, and duplicate detection. For smaller collections (<100K), brute-force search with numpy is often sufficient.
+
+## Common Patterns
+`IndexFlatL2` gives exact search and is a good baseline. `IndexIVFPQ` combines IVF and PQ for scalable approximate search with low memory. For GPU acceleration, use `index_cpu_to_gpu` to move the index to GPU for 10–100× speedup on large batches.
+
+## Pitfalls
+IVF indexes require a training step on representative data before adding vectors. The nprobe parameter controls the accuracy-speed tradeoff and must be tuned per use case. FAISS does not support dynamic updates well — adding or deleting vectors from IVF indexes requires rebuilding or using IDMap wrappers.

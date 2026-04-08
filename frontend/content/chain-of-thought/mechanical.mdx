@@ -1,0 +1,8 @@
+## How It Works
+In few-shot CoT, the prompt includes examples of (question, reasoning chain, answer) triples. The model learns from these examples to produce its own reasoning chain before answering. In zero-shot CoT, appending "Let's think step by step" to the question is sufficient to elicit reasoning in capable models.
+
+## Key Components
+The reasoning chain is generated as free-form text before the final answer, using the model's full generative capacity. The final answer is typically extracted from the end of the generation using a pattern like "The answer is X." Temperature and sampling strategy affect the quality and diversity of reasoning chains.
+
+## Step by Step
+Construct a prompt with the question and (optionally) few-shot CoT examples. Append a reasoning trigger ("Let's think step by step") if using zero-shot CoT. Generate the full reasoning chain and extract the final answer from the model's output.

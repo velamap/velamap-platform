@@ -1,0 +1,8 @@
+## When to Use
+Always chunk documents before indexing unless they are already short enough to fit in the embedding model's context (typically <512 tokens). Use recursive splitting for general text and structure-aware splitting for PDFs, HTML, or code. Experiment with chunk sizes — 256–512 tokens with 50-token overlap is a good starting point.
+
+## Common Patterns
+LangChain's `RecursiveCharacterTextSplitter` is a robust default for most text types. For structured documents (PDFs, HTML), use document-aware parsers that respect headings and sections. Parent-child chunking indexes small chunks for retrieval but returns larger parent chunks to the LLM for context.
+
+## Pitfalls
+Fixed-size chunking can split sentences mid-thought, degrading both retrieval and generation. Very small chunks (< 100 tokens) often lack enough context to be useful. Ignoring document structure (e.g., splitting across table rows or code blocks) produces incoherent chunks that confuse the LLM.

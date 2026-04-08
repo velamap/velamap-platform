@@ -1,0 +1,8 @@
+## What It Is
+The encoder-decoder architecture is a neural network design where one component (encoder) processes the input into a rich representation, and another (decoder) generates the output conditioned on that representation. It was the dominant architecture for sequence-to-sequence tasks before decoder-only models became prevalent. T5, BART, and the original Transformer use this design.
+
+## Core Idea
+The encoder reads the full input bidirectionally, building a contextualized representation of every token. The decoder then generates output tokens autoregressively, attending to both its own previous outputs (via self-attention) and the encoder's output (via cross-attention). This separation allows the encoder to fully understand the input before generation begins.
+
+## Why It Matters
+Encoder-decoder models excel at tasks where the input and output are in different "spaces," such as translation, summarization, and question answering. The encoder's bidirectional context gives it a richer input representation than a decoder-only model processing the same input. They remain competitive for structured generation tasks where the output length differs significantly from the input.

@@ -1,0 +1,8 @@
+## How It Works
+Given an input sequence X, three weight matrices W_Q, W_K, W_V project X into queries, keys, and values: Q=XW_Q, K=XW_K, V=XW_V. Attention scores are computed as softmax(QKᵀ/√d_k)V. Because all three projections share the same source X, the operation is called "self" attention.
+
+## Key Components
+The learned projection matrices allow the model to express different notions of similarity and content in different subspaces. Causal masking (setting future positions to -∞ before softmax) is added in decoder self-attention to enforce autoregressive generation. Layer normalization and residual connections wrap each self-attention block for stable training.
+
+## Step by Step
+Project the input into Q, K, V using separate linear layers. Compute pairwise dot products between all query-key pairs, scale, and apply softmax to get a weight matrix. Multiply the weight matrix by V to produce the output, then add the residual and apply layer norm.

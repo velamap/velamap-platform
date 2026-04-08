@@ -1,0 +1,8 @@
+## What It Is
+Layer normalization (LayerNorm) is a normalization technique that standardizes activations across the feature dimension of each individual sample. Unlike batch normalization, it operates independently per token and does not depend on batch statistics. It is a standard component in every Transformer layer.
+
+## Core Idea
+LayerNorm computes the mean and variance of a single token's activation vector, then normalizes it to zero mean and unit variance, followed by learned scale (γ) and shift (β) parameters. This stabilizes the distribution of activations throughout the network, enabling deeper models to train reliably. It is applied before or after attention and feed-forward sublayers.
+
+## Why It Matters
+Without normalization, deep networks suffer from internal covariate shift, making training unstable and slow. LayerNorm enables the use of higher learning rates and makes training less sensitive to initialization. It is one of the key components that allows Transformers to scale to billions of parameters.

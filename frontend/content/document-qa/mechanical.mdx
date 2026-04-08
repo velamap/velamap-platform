@@ -1,0 +1,11 @@
+## How It Works
+
+Documents are chunked into passages and embedded into a vector store. At query time, the question is embedded and used to retrieve the top-k most relevant chunks via approximate nearest-neighbor search. The retrieved chunks are concatenated with the question and passed to a reader model, which generates an answer citing the provided context.
+
+## Key Components
+
+The chunking strategy determines passage boundaries—fixed-size, sentence-based, or semantic chunking each have different tradeoffs. The retriever (dense, sparse, or hybrid) controls recall: how often the relevant passage is actually retrieved. The reader model must be capable of extractive or abstractive answer generation and ideally can indicate when the answer is not present in the context.
+
+## Process Flow
+
+A document is ingested, chunked, and embedded into a vector index. A user submits a question; the retriever fetches the top-k chunks. The reader model receives the question and chunks as context and generates an answer. Optionally, the answer includes citations pointing back to the source passages for verification.

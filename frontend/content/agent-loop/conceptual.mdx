@@ -1,0 +1,8 @@
+## What It Is
+The agent loop is the core execution cycle of an AI agent: perceive the current state, reason about what to do next, take an action, observe the result, and repeat. It is the fundamental pattern that transforms a single-turn LLM into an autonomous agent capable of multi-step task completion. The loop continues until the goal is achieved or a termination condition is met.
+
+## Core Idea
+Each iteration of the loop adds new information (tool results, observations) to the agent's context, allowing it to make progressively better-informed decisions. The LLM acts as the reasoning engine at each step, deciding whether to take another action or return a final answer. The loop structure enables the agent to handle unexpected results and adapt its plan dynamically.
+
+## Why It Matters
+The agent loop is what enables autonomous task completion — without it, LLMs can only respond to a single prompt. It allows agents to recover from errors, gather missing information, and refine their approach based on feedback. Understanding the loop is essential for designing reliable, efficient, and safe agentic systems.

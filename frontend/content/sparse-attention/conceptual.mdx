@@ -1,0 +1,8 @@
+## What It Is
+Sparse attention restricts each token to attending only to a subset of other tokens rather than the full sequence. This reduces the quadratic complexity of standard attention to sub-quadratic, enabling processing of much longer sequences. Various patterns — local windows, strided, global tokens — define which positions each token can attend to.
+
+## Core Idea
+Most attention weights in a trained model are near zero, meaning full attention is wasteful. Sparse attention exploits this by pre-defining or learning which token pairs should interact. By attending only to a structured or learned subset, the model retains most of the representational power at a fraction of the compute.
+
+## Why It Matters
+Sparse attention makes it feasible to process documents with tens of thousands of tokens that would be intractable with dense attention. Models like Longformer and BigBird use sparse patterns to handle book-length inputs. It is a key technique for extending context windows without the quadratic memory cost.

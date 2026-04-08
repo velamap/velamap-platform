@@ -1,0 +1,8 @@
+## When to Use
+Use sparse attention when processing sequences longer than ~4K tokens where full attention becomes a memory bottleneck. It is well-suited for document understanding, long-form generation, and genomics tasks with very long sequences. If your task has natural locality (e.g., text paragraphs, image patches), sliding window attention is a natural fit.
+
+## Common Patterns
+Longformer combines local window + global token attention for document classification and QA. BigBird adds random attention on top of local + global for theoretical expressiveness guarantees. Sliding window attention with a small window (e.g., 512) is a simple baseline that works well for many tasks.
+
+## Pitfalls
+Sparse patterns must be carefully designed — a poor pattern can miss critical long-range dependencies. Efficient sparse attention kernels are harder to implement and less universally supported than dense attention. Some sparse methods degrade quality compared to full attention, especially on tasks requiring global reasoning.

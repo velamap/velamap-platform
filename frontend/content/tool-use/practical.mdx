@@ -1,0 +1,8 @@
+## When to Use
+Use tool use whenever the task requires information or actions beyond the model's training data: web search, database queries, code execution, API calls, and file operations. It is essential for building production AI applications that need to interact with live systems. Even simple tools like a calculator or date/time function can significantly improve reliability.
+
+## Common Patterns
+Define tools with clear, specific descriptions — the model uses these to decide when and how to call them. Use parallel tool calling (supported by GPT-4 and Claude) to execute multiple independent tools simultaneously. Implement tool result caching to avoid redundant calls for the same inputs.
+
+## Pitfalls
+Models can hallucinate tool calls with incorrect arguments — always validate inputs before execution. Too many tools overwhelm the model and degrade tool selection accuracy; keep the active tool set small. Tool errors must be returned to the model in a structured way so it can reason about failures and retry.

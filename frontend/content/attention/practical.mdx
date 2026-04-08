@@ -1,0 +1,8 @@
+## When to Use
+Use attention whenever your task requires relating different positions in a sequence to each other, such as translation, summarization, or question answering. It is the default choice for sequence modeling tasks in modern deep learning. Attention is also useful in vision and multimodal settings where cross-modal alignment is needed.
+
+## Common Patterns
+Scaled dot-product attention is the standard form used in Transformers. Masked attention (causal masking) is applied in autoregressive decoders to prevent attending to future tokens. Cross-attention is used when queries come from one sequence and keys/values from another, as in encoder-decoder models.
+
+## Pitfalls
+Attention has O(n²) complexity in sequence length, making it expensive for very long sequences. Without positional encoding, attention is permutation-invariant and cannot distinguish token order. Attention weights are not always interpretable as human-readable explanations of model behavior.

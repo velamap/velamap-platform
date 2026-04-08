@@ -1,0 +1,8 @@
+## How It Works
+The input is projected into h sets of Q, K, V matrices, one per head, each with reduced dimension d_k = d_model/h. Each head independently computes scaled dot-product attention. The h output vectors are concatenated and passed through a final linear projection W_O to restore the original dimension.
+
+## Key Components
+Each head has its own W_Q, W_K, W_V projection matrices, allowing it to learn a distinct attention pattern. The reduced per-head dimension keeps total compute comparable to single-head attention with full dimension. The output projection W_O mixes information across all heads into a unified representation.
+
+## Step by Step
+Split the model dimension into h heads and project Q, K, V for each head separately. Run scaled dot-product attention independently in each head. Concatenate all head outputs along the feature dimension and apply the output projection W_O.

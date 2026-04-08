@@ -1,0 +1,8 @@
+## When to Use
+Always use LayerNorm (or RMSNorm) in Transformer models — it is non-negotiable for stable training. Prefer Pre-LayerNorm placement (before sublayers) for better training stability, especially in deep models. Use RMSNorm when inference speed is critical, as it eliminates the mean computation with minimal quality loss.
+
+## Common Patterns
+Pre-LayerNorm with RMSNorm is the standard in LLaMA, Mistral, and Gemma. Some models use QK-Norm (normalizing queries and keys before attention) to prevent attention entropy collapse in long-context settings. Layer norm parameters are typically included in weight decay exclusion lists during training.
+
+## Pitfalls
+Post-LayerNorm can cause training instability in very deep models without careful learning rate warmup. LayerNorm parameters (γ, β) are small but should not be forgotten when counting model parameters or saving checkpoints. Quantizing LayerNorm parameters requires care, as they are sensitive to precision loss.

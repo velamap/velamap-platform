@@ -1,0 +1,11 @@
+## How It Works
+
+A browser automation framework (such as Playwright or Puppeteer) provides programmatic control over a headless or headed browser instance. The agent receives an observation—typically a serialized DOM or screenshot—and outputs a structured action that the framework executes. This cycle repeats until the task is complete or a stopping condition is met.
+
+## Key Components
+
+The observation space includes the page URL, visible text, interactive element coordinates, and optionally a screenshot for vision-capable models. An action parser converts the model's text output into concrete browser commands. A session manager handles cookies, authentication state, and tab lifecycle across multi-step tasks.
+
+## Process Flow
+
+The agent receives a goal and an initial browser state. It selects an action, the framework executes it, and the updated page state is fed back as the next observation. The model reasons over the new state and selects the next action, continuing until the goal is achieved or a maximum step count is reached.

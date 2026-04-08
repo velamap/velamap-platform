@@ -1,0 +1,8 @@
+## How It Works
+Fixed-size chunking splits text every N tokens with optional overlap, ensuring no chunk exceeds the embedding model's limit. Recursive character splitting tries to split on natural boundaries (paragraphs, sentences, words) before falling back to character splits. Semantic chunking uses embedding similarity to detect topic shifts and split at semantic boundaries.
+
+## Key Components
+Chunk size (in tokens) determines the granularity of retrieval — 256–512 tokens is a common range. Overlap (e.g., 50 tokens) between adjacent chunks prevents information loss at boundaries. Metadata (document title, section header, page number) attached to each chunk improves retrieval and generation quality.
+
+## Step by Step
+Choose a chunking strategy based on document structure (fixed-size for uniform text, recursive for mixed content). Split the document into chunks with the chosen size and overlap. Attach metadata to each chunk and encode it with the embedding model for indexing.

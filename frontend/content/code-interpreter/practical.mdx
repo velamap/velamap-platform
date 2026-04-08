@@ -1,0 +1,11 @@
+## When to Use
+
+Code interpreters are ideal for data analysis, statistical computation, file format conversion, chart generation, and any task requiring precise arithmetic. They are also useful for exploratory programming tasks where the user wants to iterate quickly without setting up a local environment.
+
+## Implementation
+
+Integrate a sandboxed Python runtime (e.g., a Docker container or a service like E2B) and expose it as a tool the model can call. Pass execution results back into the model's context as tool output. Implement resource limits (CPU time, memory, network access) to prevent abuse and ensure predictable latency.
+
+## Best Practices
+
+Restrict the sandbox's network and filesystem access to the minimum required for the task. Pre-install common data science libraries (pandas, matplotlib, numpy) to avoid slow package installation during sessions. Log all executed code for auditability, and surface execution errors clearly so the model can self-correct rather than silently failing.

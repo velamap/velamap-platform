@@ -6,6 +6,7 @@ import { useApp, type LensId } from '@/lib/appContext'
 import { MDXRemote } from 'next-mdx-remote'
 import RagConceptual from './RagConceptual'
 import ConceptGraph from './ConceptGraph'
+import AutoPathPanel from './AutoPathPanel'
 import { LENS_ICONS, LENS_ZH, getIcon, type NavTopic } from './AppShell'
 
 interface Props {
@@ -24,20 +25,31 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
   const [isLoading, setIsLoading] = useState(false)
   const [conceptDetail, setConceptDetail] = useState<any>(null)
   const [showGraph, setShowGraph] = useState(false)
+  // 跨分类跳转时，topics 里找不到该 slug，用 extraTopicName 补面包屑
+  const [extraTopicName, setExtraTopicName] = useState<string | null>(null)
 
-  useEffect(() => { setSelectedTopic(initialTopic) }, [pageId, initialTopic])
+  useEffect(() => { setSelectedTopic(initialTopic); setExtraTopicName(null) }, [pageId, initialTopic])
 
   // 点击卡片时通过 REST API 获取概念详情（关系图谱）
   useEffect(() => {
     if (!selectedTopic) { setConceptDetail(null); return }
     fetch(`/api/concept/${selectedTopic}`)
       .then(r => r.ok ? r.json() : null)
-      .then(data => setConceptDetail(data))
+      .then(data => {
+        setConceptDetail(data)
+        // 如果当前 topics 里没有这个 slug（跨分类），用 API 返回的名字补面包屑
+        if (data && !topics.find(t => t.id === selectedTopic)) {
+          setExtraTopicName(lang === 'zh' ? data.name : (data.en_name ?? data.name))
+        } else {
+          setExtraTopicName(null)
+        }
+      })
       .catch(() => setConceptDetail(null))
   }, [selectedTopic])
 
   useEffect(() => {
     if (!selectedTopic || !activeLens) return
+    if (activeLens === 'path') return   // path lens 不需要 MDX
     let mounted = true
     setIsLoading(true)
     setMdxSource(null)
@@ -83,7 +95,7 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
           {selectedTopic && (
             <>
               <ChevronRight size={12} />
-              <span>{lang === 'zh' ? currentTopic?.zh : currentTopic?.en}</span>
+              <span>{lang === 'zh' ? (currentTopic?.zh ?? extraTopicName) : (currentTopic?.en ?? extraTopicName)}</span>
               <ChevronRight size={12} />
               <span className="active">{lang === 'zh' ? LENS_ZH[activeLens] : activeLens}</span>
             </>
@@ -144,6 +156,12 @@ export default function SharedDocView({ pageId, pageLabel, topics, initialTopic 
             )}
             {isLoading ? (
               <div style={{ color: 'var(--muted)', marginTop: '20px' }}>Loading content...</div>
+            ) : activeLens === 'path' ? (
+              <AutoPathPanel
+                onConceptClick={(slug) => { setSelectedTopic(slug); setActiveLens('conceptual') }}
+                onPathGenerated={() => {}}
+                defaultTarget={selectedTopic ?? ''}
+              />
             ) : mdxSource ? (
               <MDXRemote {...mdxSource} components={{ RagConceptual }} />
             ) : (

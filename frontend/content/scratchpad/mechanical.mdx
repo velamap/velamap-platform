@@ -1,0 +1,8 @@
+## How It Works
+The scratchpad is typically delimited by special tokens or XML-like tags (e.g., `<thinking>...</thinking>`) that separate reasoning from the final answer. The model generates scratchpad content autoregressively, using it as working memory. At inference time, the scratchpad content may be hidden from the user but is visible to the model.
+
+## Key Components
+Scratchpad delimiters signal to the model (and post-processing code) where reasoning ends and the final answer begins. In fine-tuned models, the scratchpad format is part of the training data, teaching the model when and how to use it. In prompted models, few-shot examples demonstrate the scratchpad format.
+
+## Step by Step
+Define a scratchpad format with clear start/end delimiters. Prompt or fine-tune the model to write intermediate reasoning inside the scratchpad before producing the final answer. At inference time, parse the output to extract the final answer from after the scratchpad section.

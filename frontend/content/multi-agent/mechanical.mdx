@@ -1,0 +1,8 @@
+## How It Works
+Agents communicate by passing messages through a shared channel or direct peer-to-peer messaging. An orchestrator agent (or a fixed workflow) routes tasks to appropriate specialist agents and aggregates their outputs. Each agent maintains its own context window and tool set, operating independently within its assigned scope.
+
+## Key Components
+The orchestrator decomposes the overall task and assigns subtasks to specialist agents. Specialist agents (researcher, coder, critic, etc.) have focused system prompts and tool sets optimized for their role. Shared memory (vector store, database) allows agents to share information without passing it all through message context.
+
+## Step by Step
+Define agent roles, system prompts, and tool sets for each specialist. The orchestrator receives the user task, decomposes it, and dispatches subtasks to agents. Agents execute their subtasks, return results to the orchestrator, which synthesizes a final response.

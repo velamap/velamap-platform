@@ -1,0 +1,11 @@
+## When to Use
+
+Code generation is most valuable for repetitive or boilerplate-heavy tasks: writing unit tests, generating CRUD endpoints, scaffolding new projects, and translating pseudocode into a target language. It is also effective for explaining unfamiliar code, suggesting refactors, and converting code between languages.
+
+## Implementation
+
+Provide rich context in the prompt: include relevant imports, type signatures, and a clear description of the desired behavior. Use a model fine-tuned on code (e.g., CodeLlama, DeepSeek Coder, or GPT-4o) for best results. Integrate execution feedback by running generated code in a sandbox and feeding error messages back to the model for self-correction.
+
+## Best Practices
+
+Always review generated code before committing—models can produce plausible-looking but subtly incorrect logic. Pin library versions in prompts to avoid the model suggesting deprecated APIs. Use test-driven generation: provide the test first and ask the model to write code that passes it, which grounds the output in verifiable correctness.

@@ -1,0 +1,8 @@
+## When to Use
+Use self-consistency for high-stakes reasoning tasks where accuracy matters more than cost, such as math problem solving, medical diagnosis support, or legal reasoning. It is most beneficial when the base model already produces reasonable CoT chains but makes occasional errors. Avoid it for open-ended generation tasks where there is no single correct answer to vote on.
+
+## Common Patterns
+Generate 10–20 samples with temperature 0.5–0.8 for a good accuracy-cost tradeoff. Use structured output formats (e.g., "Answer: X") to make answer extraction reliable. Combine with few-shot CoT examples for maximum accuracy on hard reasoning benchmarks.
+
+## Pitfalls
+Self-consistency multiplies inference cost by N — use it only when accuracy justifies the expense. It requires a discrete, extractable final answer; it does not apply to free-form generation. If the model consistently makes the same systematic error, majority voting will not help.

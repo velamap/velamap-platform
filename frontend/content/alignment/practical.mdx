@@ -1,0 +1,11 @@
+## When to Use
+
+Alignment techniques are essential whenever a model is deployed in contexts where harmful, deceptive, or biased outputs carry real-world consequences. They are especially important for customer-facing products, autonomous agents, and any system that influences decisions affecting people. Even internal tools benefit from basic alignment checks to prevent misuse.
+
+## Implementation
+
+Start with supervised fine-tuning on curated, high-quality demonstrations, then layer RLHF or DPO on top using human or AI-generated preference data. Use system prompts and constitutional rules to encode hard constraints, and implement output filtering as a last-resort safety net. Red-team the model regularly with adversarial prompts to surface regressions.
+
+## Best Practices
+
+Collect preference data that reflects the diversity of your user base to avoid encoding narrow values. Monitor deployed models for distribution shift and re-run alignment fine-tuning when behavior drifts. Treat alignment as an ongoing process rather than a one-time training step, since new capabilities can introduce new failure modes.

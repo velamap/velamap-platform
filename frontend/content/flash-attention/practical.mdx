@@ -1,0 +1,8 @@
+## When to Use
+Use FlashAttention whenever you are training or running inference with Transformer models, especially at sequence lengths above 512. It is particularly impactful for long-context models (8K+ tokens) where standard attention becomes prohibitively slow and memory-hungry. Most modern frameworks (PyTorch 2.0+, HuggingFace, vLLM) enable it by default.
+
+## Common Patterns
+Enable FlashAttention via `torch.nn.functional.scaled_dot_product_attention` in PyTorch 2.0+, which automatically dispatches to FlashAttention when available. For custom kernels, use the `flash-attn` package directly. FlashAttention-2 and FlashAttention-3 offer further improvements for H100 GPUs with FP8 support.
+
+## Pitfalls
+FlashAttention requires specific GPU architectures (Ampere or newer for full performance) and may not be available on all hardware. Some attention variants (e.g., ALiBi, certain sparse patterns) require custom FlashAttention kernels. Debugging attention patterns is harder since the full attention matrix is never materialized.

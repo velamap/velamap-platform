@@ -1,0 +1,8 @@
+## What It Is
+Attention is a mechanism in neural networks that allows a model to focus on relevant parts of the input when producing each output. It assigns a weight to each input element, indicating how much "attention" should be paid to it. This enables models to handle variable-length sequences and long-range dependencies.
+
+## Core Idea
+Instead of compressing all input information into a fixed vector, attention computes a weighted sum of input representations. The weights are derived from a compatibility function between a query and a set of keys, then applied to corresponding values. This lets the model dynamically select what information is most relevant at each step.
+
+## Why It Matters
+Attention replaced the bottleneck of fixed-size context vectors in sequence-to-sequence models, dramatically improving translation and summarization quality. It is the foundational building block of the Transformer architecture, which underpins virtually all modern large language models. Without attention, models struggle to relate distant tokens in long sequences.

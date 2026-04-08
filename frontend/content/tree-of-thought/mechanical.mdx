@@ -1,0 +1,8 @@
+## How It Works
+At each step, the model generates k candidate next thoughts from the current state. A value function (either the LLM itself prompted to evaluate, or a separate model) scores each candidate. A search algorithm (BFS, DFS, or beam search) selects which states to expand next, pruning low-value branches.
+
+## Key Components
+The thought generator produces candidate intermediate steps from the current state. The state evaluator scores each state as "sure," "likely," or "impossible" to reach the goal. The search controller decides which states to expand, implementing the overall search strategy (BFS explores breadth-first, DFS goes deep before backtracking).
+
+## Step by Step
+Start with the initial problem as the root node. Generate k candidate thoughts from the current node and evaluate each with the value function. Select the top-b states to expand (beam search) and repeat until a solution is found or the budget is exhausted.

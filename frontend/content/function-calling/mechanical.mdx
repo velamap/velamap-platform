@@ -1,0 +1,8 @@
+## How It Works
+Function definitions are passed to the API as a list of JSON Schema objects describing each function's name, description, and parameters. The model generates a `tool_calls` field in its response containing the function name and a JSON object of arguments. The application executes the function and returns the result as a `tool` role message in the next API call.
+
+## Key Components
+The function schema (name, description, parameters with types and descriptions) guides the model's tool selection and argument generation. The `tool_choice` parameter can force the model to call a specific function or let it decide. Parallel tool calls allow the model to invoke multiple functions simultaneously in a single response.
+
+## Step by Step
+Define functions as JSON Schema objects and include them in the `tools` parameter of the API request. Check if the response contains `tool_calls` — if so, execute each call and collect results. Send the results back as `tool` role messages and call the API again for the model's next response.

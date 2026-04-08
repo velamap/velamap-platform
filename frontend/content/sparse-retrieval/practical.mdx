@@ -1,0 +1,8 @@
+## When to Use
+Use sparse retrieval as a baseline or component in any search system, especially when queries contain specific keywords, product names, or technical terms. It is the right choice when latency is critical and GPU resources are unavailable. Always include sparse retrieval in hybrid search pipelines alongside dense retrieval.
+
+## Common Patterns
+Use `rank_bm25` or Elasticsearch's built-in BM25 for quick deployment. SPLADE and other learned sparse models improve recall while maintaining the efficiency of sparse indexes. Combine BM25 with dense retrieval using Reciprocal Rank Fusion (RRF) for robust hybrid search.
+
+## Pitfalls
+BM25 fails on semantic queries where the query and document use different vocabulary (synonyms, paraphrases). It requires exact term matching, so stemming and stop-word removal are important preprocessing steps. BM25 scores are not calibrated probabilities and should not be compared across different queries without normalization.

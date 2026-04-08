@@ -1,0 +1,8 @@
+## What It Is
+Retrieval is the process of finding relevant documents or passages from a large corpus given a query. In the context of LLMs, retrieval is used to augment generation with external knowledge, enabling models to answer questions about information not in their training data. It is the "R" in RAG (Retrieval-Augmented Generation).
+
+## Core Idea
+Given a query, a retrieval system scores all candidate documents and returns the top-k most relevant ones. The scoring function can be based on lexical overlap (BM25), semantic similarity (dense embeddings), or a combination. Retrieved documents are then provided as context to the LLM for grounded generation.
+
+## Why It Matters
+Retrieval allows LLMs to access up-to-date, domain-specific, or private knowledge without retraining. It reduces hallucination by grounding responses in retrieved evidence. Retrieval is also more cost-effective than storing all knowledge in model weights, especially for frequently changing information.

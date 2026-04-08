@@ -1,0 +1,8 @@
+## How It Works
+FlashAttention tiles the Q, K, V matrices into blocks and processes them sequentially, keeping intermediate results in SRAM. It uses the online softmax trick to compute the correct softmax normalization incrementally without storing the full attention matrix. The backward pass recomputes attention weights on-the-fly from stored Q, K, V rather than saving them, trading compute for memory.
+
+## Key Components
+The tiling strategy divides the sequence into chunks that fit in SRAM, avoiding expensive HBM round-trips for the N×N matrix. The online softmax algorithm maintains running max and sum statistics to correctly normalize across tiles. FlashAttention-2 further optimizes by reducing non-matmul FLOPs and improving parallelism across the sequence dimension.
+
+## Step by Step
+Divide Q into row tiles and K, V into column tiles. For each Q tile, iterate over all K/V tiles, accumulating the softmax numerator and denominator incrementally. After processing all tiles, divide accumulated values by the normalization factor to produce the correct output.

@@ -1,0 +1,8 @@
+## What It Is
+Tree of Thought (ToT) is a reasoning framework that extends chain-of-thought by exploring multiple reasoning paths simultaneously in a tree structure. Instead of committing to a single reasoning chain, the model generates several candidate "thoughts" at each step and uses a value function to decide which branches to explore further. It enables deliberate, search-based problem solving.
+
+## Core Idea
+Complex problems often require backtracking and exploring alternatives — a linear chain of thought cannot do this. ToT frames problem solving as a search over a tree of partial solutions, where each node is an intermediate reasoning state. A separate evaluation step scores each state, guiding the search toward promising branches using BFS or DFS.
+
+## Why It Matters
+ToT dramatically improves performance on tasks requiring planning, exploration, and backtracking, such as the Game of 24, creative writing with constraints, and multi-step planning. It shows that LLMs can solve problems they fail at with standard prompting when given a structured search framework. It is a foundation for more sophisticated agentic reasoning systems.

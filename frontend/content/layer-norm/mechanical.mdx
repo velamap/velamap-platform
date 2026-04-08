@@ -1,0 +1,8 @@
+## How It Works
+Given an activation vector x of dimension d, LayerNorm computes μ = mean(x), σ² = var(x), then outputs γ ⊙ (x - μ)/√(σ² + ε) + β. The learnable parameters γ and β allow the model to rescale and shift the normalized output. The small constant ε prevents division by zero.
+
+## Key Components
+Pre-LayerNorm (applied before attention/FFN) is more stable than Post-LayerNorm (applied after) and is used in most modern LLMs. RMSNorm is a simplified variant that omits the mean subtraction, computing only the RMS normalization: x / RMS(x) · γ. RMSNorm is faster and used in LLaMA, Mistral, and other efficient models.
+
+## Step by Step
+Compute the mean and variance of the input vector across its feature dimension. Subtract the mean and divide by the standard deviation (plus epsilon). Multiply by the learned scale γ and add the learned bias β to produce the normalized output.

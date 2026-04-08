@@ -1,0 +1,11 @@
+## How It Works
+
+The model receives a prompt containing a natural language description, existing code context, or a docstring, and autoregressively generates tokens that form the requested code. Fill-in-the-middle (FIM) training teaches the model to complete code given both a prefix and a suffix, enabling inline completions. Execution feedback can be used to iteratively refine outputs that fail tests.
+
+## Key Components
+
+A code-specialized tokenizer handles language-specific tokens like indentation, operators, and keywords efficiently. The model's training corpus includes public repositories, documentation, and Stack Overflow discussions to cover diverse APIs and patterns. A post-processing step may apply linting, formatting, or sandboxed execution to validate the generated output.
+
+## Process Flow
+
+The developer provides a prompt—a function signature, a comment, or a partial implementation. The model generates a candidate completion token by token. The IDE or tool displays the suggestion, and the developer accepts, edits, or rejects it. In agentic settings, the model may also run the code and iterate based on error messages.

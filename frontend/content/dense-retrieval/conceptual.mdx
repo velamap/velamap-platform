@@ -1,0 +1,8 @@
+## What It Is
+Dense retrieval uses neural network embeddings to represent queries and documents as dense vectors, then finds relevant documents by computing vector similarity. Unlike sparse retrieval (BM25), it captures semantic meaning rather than exact keyword matches. It is the foundation of modern semantic search and RAG systems.
+
+## Core Idea
+A bi-encoder model encodes queries and documents independently into fixed-size vectors in a shared embedding space. Relevance is measured by cosine similarity or dot product between query and document vectors. Because documents are encoded offline, retrieval reduces to a fast nearest-neighbor search at query time.
+
+## Why It Matters
+Dense retrieval handles paraphrase, synonymy, and semantic equivalence that lexical methods miss. It enables cross-lingual retrieval where query and documents are in different languages. Models like DPR, E5, and BGE have made dense retrieval highly effective across diverse domains.

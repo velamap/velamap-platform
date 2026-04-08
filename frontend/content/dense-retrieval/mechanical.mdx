@@ -1,0 +1,8 @@
+## How It Works
+A bi-encoder consists of two encoders (often shared weights) that independently map queries and documents to vectors. Training uses contrastive loss (e.g., InfoNCE) with positive pairs (query, relevant doc) and negatives (query, irrelevant docs). At inference, document vectors are pre-computed and stored in a vector index; query vectors are computed on-the-fly.
+
+## Key Components
+Hard negative mining — using near-miss documents as negatives — is critical for training high-quality bi-encoders. In-batch negatives use other queries' positives as negatives, enabling efficient training without explicit negative sampling. The embedding dimension (typically 768–1024) and pooling strategy (CLS token vs. mean pooling) affect quality.
+
+## Step by Step
+Encode all corpus documents offline and store their vectors in a FAISS or HNSW index. At query time, encode the query with the same model. Perform approximate nearest-neighbor search to retrieve the top-k most similar document vectors.

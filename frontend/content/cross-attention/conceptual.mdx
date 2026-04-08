@@ -1,0 +1,8 @@
+## What It Is
+Cross-attention is an attention mechanism where queries come from one sequence and keys and values come from a different sequence. It allows one modality or sequence to "look at" another, enabling information flow between two distinct sources. It is the bridge between encoder and decoder in sequence-to-sequence models.
+
+## Core Idea
+The decoder generates queries based on what it has produced so far, while the encoder provides keys and values representing the full input. This lets each decoder step selectively retrieve the most relevant parts of the input. Cross-attention is also used in multimodal models to align text with images or audio.
+
+## Why It Matters
+Cross-attention is what allows encoder-decoder models to condition generation on an arbitrary input sequence. Without it, the decoder would have no direct access to the encoded source. It is also central to diffusion models, where text embeddings guide image generation via cross-attention layers.

@@ -1,0 +1,8 @@
+## When to Use
+Use dense retrieval when your queries are semantic in nature and may not share exact keywords with relevant documents. It is the preferred approach for general-purpose RAG, FAQ matching, and cross-lingual search. Combine with sparse retrieval (hybrid search) for best results on mixed query types.
+
+## Common Patterns
+Use pre-trained models like `BAAI/bge-large-en-v1.5` or `intfloat/e5-large-v2` as strong off-the-shelf bi-encoders. Fine-tune on domain-specific data with contrastive loss if out-of-domain performance is insufficient. Use `sentence-transformers` library for easy encoding and `faiss` or `qdrant` for vector storage.
+
+## Pitfalls
+Dense retrieval requires encoding the entire corpus upfront, which is expensive for large collections. Bi-encoders can miss exact keyword matches that BM25 would catch — hybrid search addresses this. Domain shift is a significant issue: a model trained on Wikipedia may perform poorly on legal or medical text without fine-tuning.

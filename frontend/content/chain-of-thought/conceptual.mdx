@@ -1,0 +1,8 @@
+## What It Is
+Chain-of-thought (CoT) prompting is a technique that encourages LLMs to produce intermediate reasoning steps before giving a final answer. By showing the model examples of step-by-step reasoning (few-shot CoT) or simply instructing it to "think step by step" (zero-shot CoT), complex problems become more tractable. It significantly improves performance on arithmetic, logical, and multi-step reasoning tasks.
+
+## Core Idea
+LLMs generate text autoregressively, so the tokens they produce become part of their own context. By generating reasoning steps, the model effectively uses its output as a scratchpad, breaking complex problems into simpler sub-problems. Each intermediate step conditions the next, allowing the model to maintain coherent multi-step reasoning.
+
+## Why It Matters
+CoT prompting unlocks reasoning capabilities that are latent in large models but not expressed with direct answer prompting. It is one of the most impactful prompting techniques, often improving accuracy by 20–50% on hard reasoning benchmarks. It also makes model reasoning more transparent and easier to verify.

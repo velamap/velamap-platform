@@ -1,0 +1,8 @@
+## How It Works
+A retrieval system consists of an index (pre-built from the corpus) and a query-time scoring function. At query time, the query is encoded and compared against indexed documents using the scoring function. The top-k documents by score are returned and passed to the downstream model.
+
+## Key Components
+The index can be an inverted index (for lexical search), a vector index (for dense search), or both (for hybrid search). The scoring function determines relevance: BM25 for term frequency, cosine similarity for dense embeddings, or learned cross-encoder scores for reranking. Chunking strategy determines the granularity of indexed units.
+
+## Step by Step
+Pre-process the corpus by chunking documents and encoding them into the index. At query time, encode the query and retrieve top-k candidates from the index. Optionally rerank the candidates with a more expensive model before passing to the LLM.

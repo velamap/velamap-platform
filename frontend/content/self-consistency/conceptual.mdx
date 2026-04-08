@@ -1,0 +1,8 @@
+## What It Is
+Self-consistency is a decoding strategy that generates multiple independent reasoning chains for the same question and selects the most common final answer by majority vote. It improves upon greedy CoT by sampling diverse reasoning paths and aggregating their conclusions. It is particularly effective for tasks with a single correct answer.
+
+## Core Idea
+Different reasoning paths may reach the same correct answer through different routes, while errors tend to be more diverse. By sampling many chains and taking the majority vote on the final answer, self-consistency filters out idiosyncratic errors. The intuition is that correct answers are more "stable" across diverse reasoning paths than incorrect ones.
+
+## Why It Matters
+Self-consistency consistently outperforms single-chain CoT on arithmetic and commonsense reasoning benchmarks, often by 5–15%. It requires no additional training or fine-tuning — just multiple inference calls. It is a simple but powerful way to improve reliability for high-stakes reasoning tasks.

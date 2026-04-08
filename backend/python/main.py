@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import concepts, qdrant_router
+from routers import concepts, qdrant_router, auto_path
 
 app = FastAPI(title="Velamap API")
 
@@ -14,6 +14,7 @@ app.add_middleware(
 
 app.include_router(concepts.router)
 app.include_router(qdrant_router.router)
+app.include_router(auto_path.router)
 
 if __name__ == "__main__":
     import uvicorn

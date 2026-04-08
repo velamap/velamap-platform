@@ -1,0 +1,11 @@
+## How It Works
+
+The model generates a block of code (typically Python) and sends it to a sandboxed execution environment. The sandbox runs the code, captures stdout, stderr, and any file outputs, and returns the results to the model. The model incorporates the execution output into its context and decides whether to generate more code, answer the user, or request clarification.
+
+## Key Components
+
+The sandbox is an isolated container or virtual machine that prevents the code from accessing the host system or network. A state manager persists variables and imported libraries across multiple execution turns within a session. File I/O support allows the model to read uploaded files and produce downloadable artifacts like CSVs or images.
+
+## Process Flow
+
+The user submits a task (e.g., "analyze this CSV and plot the trend"). The model writes Python code to load and process the data. The sandbox executes the code and returns the output or an error. The model reads the result, refines its approach if needed, and ultimately presents the answer or artifact to the user.

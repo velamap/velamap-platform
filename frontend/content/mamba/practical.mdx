@@ -1,0 +1,8 @@
+## When to Use
+Use Mamba for long-sequence tasks where attention is too slow or memory-intensive, such as genomics, long audio, or document processing. It is a strong choice for streaming inference applications where constant memory per step is required. Mamba-2 and hybrid Mamba-Transformer models offer improved quality for language tasks.
+
+## Common Patterns
+Pure Mamba models work well for sequence classification and generation on long inputs. Jamba and Zamba interleave Mamba and attention layers, combining Mamba's efficiency with attention's in-context retrieval strength. Mamba is increasingly used as a drop-in replacement for attention in vision and audio models.
+
+## Pitfalls
+Mamba can underperform attention on tasks requiring precise copying or retrieval from context, such as few-shot in-context learning. The selective scan requires custom CUDA kernels for efficiency — pure PyTorch implementations are slow. Mamba's recurrent nature makes it harder to parallelize across the sequence dimension during training compared to attention.

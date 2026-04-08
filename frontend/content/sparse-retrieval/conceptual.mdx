@@ -1,0 +1,8 @@
+## What It Is
+Sparse retrieval finds relevant documents using lexical matching, representing documents and queries as sparse vectors over a vocabulary. BM25 is the dominant sparse retrieval algorithm, scoring documents based on term frequency and inverse document frequency. It is fast, interpretable, and highly effective for keyword-heavy queries.
+
+## Core Idea
+Each document is represented as a sparse vector where non-zero dimensions correspond to terms present in the document, weighted by their importance. Query terms are matched against document terms, and documents are ranked by their aggregate term-match score. The sparsity means only a tiny fraction of dimensions are non-zero, enabling efficient inverted index lookup.
+
+## Why It Matters
+Sparse retrieval is extremely fast due to inverted index lookups and requires no GPU or neural network at query time. BM25 remains a strong baseline that dense retrieval often struggles to beat on keyword-heavy queries. It is the backbone of search engines like Elasticsearch and Solr.

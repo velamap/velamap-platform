@@ -1,0 +1,8 @@
+## What It Is
+State Space Models (SSMs) are a class of sequence models inspired by classical control theory that represent sequences through a latent state evolving over time. They offer an alternative to attention-based Transformers with linear complexity in sequence length. SSMs can be formulated as either recurrences (for efficient inference) or convolutions (for efficient training).
+
+## Core Idea
+An SSM maps an input sequence u(t) to an output y(t) through a hidden state h(t) governed by linear differential equations: h'(t) = Ah(t) + Bu(t), y(t) = Ch(t) + Du(t). The matrices A, B, C, D are learned parameters. Discretizing these equations yields a recurrent form suitable for sequential processing.
+
+## Why It Matters
+SSMs achieve O(n) inference complexity compared to O(n²) for attention, making them attractive for very long sequences. They can be trained efficiently as convolutions in parallel. Models like S4, H3, and Mamba have shown competitive performance with Transformers on long-range dependency benchmarks.

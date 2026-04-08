@@ -1,0 +1,8 @@
+## How It Works
+The agent loop begins with a user goal and a set of available tools. The LLM generates a thought and selects an action (tool call) with arguments. The tool is executed and its output is appended to the context. The LLM then generates the next thought/action based on the updated context, repeating until it decides to return a final answer.
+
+## Key Components
+The system prompt defines the agent's persona, available tools, and behavioral guidelines. Tools are functions with defined input/output schemas that the LLM can call. Memory (short-term context, long-term vector store) allows the agent to maintain state across steps and sessions.
+
+## Step by Step
+Initialize the agent with a goal and tool definitions in the system prompt. The LLM generates a reasoning step and a tool call. Execute the tool, append the result to the conversation, and pass back to the LLM. Repeat until the LLM generates a final answer instead of a tool call.

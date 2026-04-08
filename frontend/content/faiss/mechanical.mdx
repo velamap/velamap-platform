@@ -1,0 +1,8 @@
+## How It Works
+FAISS organizes vectors into index structures that allow pruning the search space. IVF (Inverted File Index) clusters vectors into Voronoi cells; at query time, only the nearest cells are searched. PQ (Product Quantization) compresses vectors into compact codes, reducing memory and enabling fast approximate distance computation.
+
+## Key Components
+IVF partitions the vector space into nlist clusters using k-means; queries search only nprobe clusters. PQ splits each vector into sub-vectors and quantizes each independently, enabling compressed storage and fast asymmetric distance computation. HNSW (also available in FAISS) builds a hierarchical graph for logarithmic-time search.
+
+## Step by Step
+Build the index by training quantizers on a representative sample of vectors, then adding all vectors. At query time, encode the query and search the relevant index partitions or graph nodes. Retrieve the top-k candidate IDs and optionally re-rank with exact distances.

@@ -1,0 +1,8 @@
+## When to Use
+Use multi-agent systems for tasks that naturally decompose into parallel subtasks, require specialized expertise, or exceed a single agent's context window. They are well-suited for software development (planner + coder + tester), research (searcher + analyst + writer), and complex business workflows. Start with a single agent and add agents only when a clear bottleneck emerges.
+
+## Common Patterns
+Supervisor pattern: one orchestrator agent delegates to worker agents and synthesizes results. Peer-to-peer pattern: agents communicate directly, with no central coordinator. Pipeline pattern: agents process tasks sequentially, each building on the previous agent's output.
+
+## Pitfalls
+Multi-agent systems are harder to debug than single agents — errors can propagate and compound across agents. Communication overhead and latency multiply with the number of agents. Agents can get into disagreement loops or produce conflicting outputs that the orchestrator cannot resolve.

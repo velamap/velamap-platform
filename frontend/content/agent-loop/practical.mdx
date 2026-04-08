@@ -1,0 +1,8 @@
+## When to Use
+The agent loop is the right pattern whenever a task requires multiple steps, tool calls, or adaptive decision-making. It is the foundation of all agentic frameworks (LangChain, LlamaIndex, AutoGen). Even simple two-step tasks (retrieve then answer) benefit from the loop structure for error handling and flexibility.
+
+## Common Patterns
+Set a maximum step limit (e.g., 10–20 steps) to prevent runaway loops. Log each step for debugging and observability. Use structured output for tool calls to ensure reliable parsing. Implement exponential backoff for tool failures before giving up.
+
+## Pitfalls
+Without a step limit, agents can loop indefinitely on unsolvable tasks. Context window overflow is a real risk for long-running loops — implement context summarization or truncation. Agents can get stuck in repetitive patterns (calling the same tool with the same arguments) — detect and break these loops explicitly.

@@ -7,7 +7,7 @@ import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   Telescope, LayoutGrid, Bot, Cpu, Server, Sun, Moon,
   Globe, Search, Menu, BookOpen, Code, Wrench, BarChart,
-  History, AlertTriangle, Bookmark, Database, Route, type LucideIcon
+  History, AlertTriangle, Bookmark, Database, Route, Zap, type LucideIcon
 } from 'lucide-react'
 import { useApp } from '@/lib/appContext'
 import type { LensId } from '@/lib/appContext'
@@ -45,20 +45,16 @@ export interface NavCategory {
 // ── Lens（固定，不从后端取）───────────────────────────────────
 export const LENS_ICONS: Record<LensId, LucideIcon> = {
   conceptual: BookOpen,
-  mechanical: Code,
-  practical: Wrench,
-  comparative: BarChart,
-  evolutionary: History,
-  critical: AlertTriangle,
+  path:        Zap,
+  mechanical:  Code,
+  practical:   Wrench,
 }
 
 export const LENS_ZH: Record<LensId, string> = {
   conceptual: '概念',
+  path:       '路径',
   mechanical: '机制',
-  practical: '实践',
-  comparative: '对比',
-  evolutionary: '演进',
-  critical: '批判',
+  practical:  '实践',
 }
 
 // ── 主组件 ────────────────────────────────────────────────────

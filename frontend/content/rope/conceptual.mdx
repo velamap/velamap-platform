@@ -1,0 +1,8 @@
+## What It Is
+Rotary Position Embedding (RoPE) is a positional encoding method that encodes absolute position information using rotation matrices applied to query and key vectors in attention. Unlike additive positional encodings, RoPE modifies the attention computation itself rather than the input embeddings. It has become the dominant positional encoding in modern LLMs.
+
+## Core Idea
+RoPE rotates query and key vectors by an angle proportional to their absolute position before computing attention scores. The dot product of a rotated query and key naturally depends only on their relative position, giving RoPE the benefits of relative positional encoding. This elegant property enables strong length generalization and extrapolation.
+
+## Why It Matters
+RoPE enables models to generalize to longer sequences than seen during training, especially when combined with techniques like YaRN or position interpolation. It is used in LLaMA, Mistral, Falcon, and most other state-of-the-art open-source LLMs. Its relative position property makes it more robust than absolute learned embeddings for long-context tasks.

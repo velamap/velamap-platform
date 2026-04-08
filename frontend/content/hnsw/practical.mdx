@@ -1,0 +1,8 @@
+## When to Use
+Use HNSW when you need high recall with fast query times and the ability to add vectors incrementally. It is the best general-purpose ANN algorithm for most vector search applications. Prefer HNSW over IVF-based indexes when your dataset grows dynamically or when you cannot afford a training step.
+
+## Common Patterns
+Set M=16 and efConstruction=200 as a starting point; increase both for higher recall at the cost of memory and build time. At query time, set ef >= k (number of results) and tune upward until recall meets your target. Most vector databases (Qdrant, Weaviate, Milvus) expose these parameters directly.
+
+## Pitfalls
+HNSW uses significantly more memory than IVF+PQ because it stores the full vectors plus graph edges. Construction is slower than flat indexes for large datasets. Deleting vectors from HNSW is complex — most implementations use soft deletion (marking nodes as deleted) rather than true removal.

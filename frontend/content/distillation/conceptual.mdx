@@ -1,0 +1,11 @@
+## What is Distillation
+
+Knowledge distillation is a model compression technique where a smaller "student" model is trained to mimic the behavior of a larger "teacher" model. Instead of learning from hard labels alone, the student learns from the teacher's soft probability distributions, which carry richer information about the model's internal representations. The result is a compact model that retains much of the teacher's performance at a fraction of the compute cost.
+
+## Core Ideas
+
+The teacher's output logits (before softmax) encode relationships between classes or tokens that hard labels discard. By training the student to match these soft targets, it learns a more nuanced representation of the data. A temperature parameter controls how "soft" the teacher's distribution is—higher temperatures spread probability mass more evenly, revealing more inter-class similarity.
+
+## Why It Matters
+
+Distillation enables deployment of capable models on resource-constrained hardware such as mobile devices, edge servers, and low-latency APIs. It is also used to create smaller, faster models for high-throughput production systems where the full teacher model would be too expensive to run. Models like DistilBERT and Phi demonstrate that distilled models can approach teacher performance on many benchmarks.

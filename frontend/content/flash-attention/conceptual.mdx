@@ -1,0 +1,8 @@
+## What It Is
+FlashAttention is an IO-aware exact attention algorithm that computes the same result as standard attention but with significantly reduced memory usage and faster wall-clock time. It achieves this by restructuring the computation to minimize reads and writes to GPU HBM (high-bandwidth memory). It is not an approximation — it produces bit-identical results to standard attention.
+
+## Core Idea
+Standard attention materializes the full N×N attention matrix in HBM, which is slow and memory-intensive. FlashAttention uses tiling to compute attention in blocks that fit in fast SRAM, fusing the softmax and matrix multiply into a single kernel pass. This dramatically reduces memory bandwidth usage, which is the true bottleneck on modern GPUs.
+
+## Why It Matters
+FlashAttention enables training and inference on much longer sequences without running out of memory. It is 2–4× faster than standard attention in practice and reduces memory from O(N²) to O(N). It has become the default attention implementation in most modern LLM training frameworks.

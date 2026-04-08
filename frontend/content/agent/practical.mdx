@@ -1,0 +1,8 @@
+## When to Use
+Use agents for tasks that require multiple steps, external information, or real-world actions that cannot be completed in a single LLM call. They are well-suited for research tasks, software development assistance, data analysis, and workflow automation. Avoid agents for simple Q&A tasks where a single LLM call suffices.
+
+## Common Patterns
+ReAct (Reason + Act) is the standard agent pattern: the model alternates between reasoning steps and tool calls. LangChain, LlamaIndex, and AutoGen provide agent frameworks with pre-built tool integrations. Start with a minimal tool set and add tools incrementally to avoid overwhelming the model.
+
+## Pitfalls
+Agents can get stuck in loops, making the same failed tool call repeatedly. Long agent trajectories accumulate context that can exceed the model's context window. Agents require careful error handling — tool failures must be communicated back to the LLM in a way it can reason about.

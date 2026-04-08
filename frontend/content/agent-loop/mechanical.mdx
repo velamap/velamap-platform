@@ -1,0 +1,8 @@
+## How It Works
+The loop maintains a conversation history that grows with each iteration. At each step, the full history (system prompt + all previous messages + tool results) is sent to the LLM. The LLM generates either a tool call or a final answer. If a tool call, it is executed and the result is appended; if a final answer, the loop terminates.
+
+## Key Components
+The conversation history is the agent's working memory, accumulating all observations and reasoning. The stopping condition prevents infinite loops — typically a max step count, a "task complete" signal from the LLM, or a timeout. The tool execution layer handles dispatching, error handling, and result formatting.
+
+## Step by Step
+Initialize the history with the system prompt and user task. Call the LLM with the current history to get the next action. If the action is a tool call, execute it and append the result; if it is a final answer, return it and stop. Increment the step counter and check stopping conditions before the next iteration.

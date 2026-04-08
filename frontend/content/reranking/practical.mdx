@@ -1,0 +1,8 @@
+## When to Use
+Add reranking to any RAG pipeline where retrieval precision matters and you can afford 50–200ms of additional latency. It is especially valuable when the first-stage retriever is noisy (e.g., BM25 on semantic queries). Use reranking when the number of documents passed to the LLM is small (e.g., top 3–5) and quality is critical.
+
+## Common Patterns
+`cross-encoder/ms-marco-MiniLM-L-6-v2` from sentence-transformers is a fast, high-quality reranker. Cohere Rerank and Jina Reranker are strong API-based options. Retrieve top-100 with BM25 or dense retrieval, rerank to top-5, then pass to the LLM for generation.
+
+## Pitfalls
+Reranking adds latency proportional to the number of candidates — keep the candidate set small (50–200). Cross-encoders cannot be used for first-stage retrieval because they require the query at index time. Rerankers trained on general web data may underperform on specialized domains without fine-tuning.

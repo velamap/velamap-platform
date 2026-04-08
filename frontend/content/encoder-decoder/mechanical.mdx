@@ -1,0 +1,8 @@
+## How It Works
+The encoder applies bidirectional self-attention over the full input sequence, producing a sequence of contextualized hidden states. The decoder applies causal self-attention over previously generated tokens, then cross-attention over the encoder's hidden states. This cross-attention is the information bridge between encoder and decoder.
+
+## Key Components
+The encoder stack consists of alternating self-attention and feed-forward layers with no causal masking. The decoder stack adds a cross-attention sublayer between self-attention and feed-forward layers. The encoder output is computed once and reused at every decoder step, making inference efficient.
+
+## Step by Step
+Pass the input sequence through the encoder to produce a fixed set of hidden states. Initialize the decoder with a start token and autoregressively generate output tokens. At each decoder step, attend to previous outputs via self-attention and to encoder states via cross-attention, then project to vocabulary logits.

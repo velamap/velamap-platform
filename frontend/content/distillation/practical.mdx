@@ -1,0 +1,11 @@
+## When to Use
+
+Use distillation when you need a smaller, faster model for production deployment and have access to a high-quality teacher. It is particularly effective when labeled data is scarce, since the teacher's soft outputs provide richer supervision than hard labels alone. Distillation is also useful for domain adaptation: fine-tune the teacher on domain data, then distill into a smaller student.
+
+## Implementation
+
+Generate teacher logits offline and store them to avoid running the teacher during every student training step. Tune the distillation weight (alpha) and temperature (T) on a validation set—typical starting points are alpha=0.5 and T=4. Consider layer-wise distillation if the student architecture mirrors the teacher's, as matching intermediate representations often improves final performance.
+
+## Best Practices
+
+Ensure the student architecture has sufficient capacity to absorb the teacher's knowledge—too small a student will underfit regardless of the distillation signal. Use the same tokenizer and preprocessing pipeline for both teacher and student to avoid distribution mismatch. Evaluate the student on the same benchmarks as the teacher to quantify the performance-size tradeoff accurately.

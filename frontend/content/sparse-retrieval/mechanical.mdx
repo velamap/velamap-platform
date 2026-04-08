@@ -1,0 +1,8 @@
+## How It Works
+BM25 scores a document D for query Q as: Σ IDF(q_i) · (f(q_i,D) · (k1+1)) / (f(q_i,D) + k1·(1-b+b·|D|/avgdl)), where f is term frequency, IDF is inverse document frequency, and k1, b are tuning parameters. An inverted index maps each term to the list of documents containing it, enabling fast lookup. Only documents containing at least one query term are scored.
+
+## Key Components
+The IDF component down-weights common terms (e.g., "the") and up-weights rare, discriminative terms. The k1 parameter controls term frequency saturation (typically 1.2–2.0). The b parameter controls document length normalization (typically 0.75). Learned sparse models (SPLADE) extend BM25 by learning expanded sparse representations.
+
+## Step by Step
+Build an inverted index mapping terms to (document_id, term_frequency) pairs. At query time, look up each query term in the index to get candidate documents. Score each candidate using the BM25 formula and return the top-k by score.
