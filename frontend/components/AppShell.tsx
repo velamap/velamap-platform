@@ -1,12 +1,13 @@
 'use client'
 
 import SharedDocView from './SharedDocView'
+import PathView from './PathView'
 import LangDropdown from './LangDropdown'
 import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   Telescope, LayoutGrid, Bot, Cpu, Server, Sun, Moon,
   Globe, Search, Menu, BookOpen, Code, Wrench, BarChart,
-  History, AlertTriangle, Bookmark, Database, type LucideIcon
+  History, AlertTriangle, Bookmark, Database, Route, type LucideIcon
 } from 'lucide-react'
 import { useApp } from '@/lib/appContext'
 import type { LensId } from '@/lib/appContext'
@@ -15,7 +16,7 @@ import { useKeyboardShortcuts } from '@/lib/useKeyboardShortcuts'
 // ── Icon 映射（后端存字符串，前端映射到组件）──────────────────
 const ICON_MAP: Record<string, LucideIcon> = {
   Telescope, LayoutGrid, Bot, Cpu, Server, BookOpen, Code,
-  Wrench, BarChart, History, AlertTriangle, Bookmark, Database, Globe,
+  Wrench, BarChart, History, AlertTriangle, Bookmark, Database, Globe, Route,
 }
 export function getIcon(name: string): LucideIcon {
   return ICON_MAP[name] ?? BookOpen
@@ -146,6 +147,17 @@ export default function AppShell() {
               </button>
             )
           })}
+
+          {/* 学习路径入口 */}
+          <div style={{ margin: '8px 8px 0', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+            <button
+              className={`nav-item ${activePage === '__paths__' ? 'active' : ''}`}
+              onClick={() => { setActivePage('__paths__'); setMobileSidebarOpen(false) }}
+            >
+              <Route size={16} style={{ flexShrink: 0 }} />
+              {!collapsed && <span>{lang === 'zh' ? '学习路径' : 'Paths'}</span>}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -202,7 +214,13 @@ export default function AppShell() {
           </div>
         </div>
 
-        {activeCategory && (
+        {activePage === '__paths__' ? (
+          <PathView onConceptClick={(slug) => {
+            // 找到该概念所属分类，跳转过去
+            const cat = navData.find(c => c.topics.some(t => t.id === slug))
+            if (cat) { setActivePage(cat.id); setSearchTargetTopic(slug); setNavVersion(v => v + 1) }
+          }} />
+        ) : activeCategory && (
           <SharedDocView
             key={`${activePage}-${searchTargetTopic || 'none'}-${navVersion}`}
             pageId={activePage}

@@ -39,22 +39,34 @@ docker stats
 
 ## 部署更新
 
+### 改了代码（需要重新构建镜像）
+
 ```bash
-# 1. 拉取最新代码（包含 docker-compose.yml 更新）
-git pull origin main
+git pull
+docker compose build
+docker compose down
+docker compose up -d
+```
 
-# 2. 登录 GHCR
-echo "$GITHUB_TOKEN" | docker login ghcr.io -u <github-username> --password-stdin
+### 只改了配置（docker-compose.yml、环境变量等）
 
-# 3. 拉取新镜像并滚动更新
-docker compose pull
-docker compose up -d --remove-orphans
+```bash
+git pull
+docker compose down
+docker compose up -d
+```
 
-# 4. 验证
+### 一条命令完成（改代码时）
+
+```bash
+git pull && docker compose build && docker compose down && docker compose up -d
+```
+
+### 验证
+
+```bash
 curl http://localhost:8201/api/nav
-
-# 5. 清理旧镜像
-docker image prune -f
+docker compose ps
 ```
 
 ## 紧急回滚

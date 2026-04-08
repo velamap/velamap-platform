@@ -16,7 +16,7 @@ const nextConfig = {
       // Python backend — 主应用 (profile / tasks / group / stats)
       // 注意：排除已有 Next.js Route Handler 的路径（nav / concept / content）
       {
-        source: '/api/:path((?!nav|concept|content).*)',
+        source: '/api/:path((?!nav|concept|content|path|paths).*)',
         destination: 'http://127.0.0.1:8000/api/:path*',
       },
     ]
